@@ -16,6 +16,7 @@ public class SubmissionInfo {
         this.submissionId = submissionId;
         this.submissionDate = submissionDate;
         this.taskName = taskName;
+
         this.evaluated = false;
     }
 

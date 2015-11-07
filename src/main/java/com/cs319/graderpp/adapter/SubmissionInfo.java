@@ -11,6 +11,7 @@ public class SubmissionInfo {
     private String taskName;
     private int grade;
     private boolean evaluated;
+    
 
     public SubmissionInfo(int submissionId, DateTime submissionDate, String taskName) {
         this.submissionId = submissionId;

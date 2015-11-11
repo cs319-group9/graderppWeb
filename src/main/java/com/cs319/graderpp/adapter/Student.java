@@ -5,5 +5,18 @@ package com.cs319.graderpp.adapter;
  */
 public class Student extends User {
 
-    private String studentId;
+    private int studentId;
+
+    public Student(String username, String password, int studentId) {
+        super(username, password, 1);
+        this.studentId = studentId;
+    }
+
+    public int getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(int studentId) {
+        this.studentId = studentId;
+    }
 }

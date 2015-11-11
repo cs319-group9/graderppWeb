@@ -41,16 +41,5 @@
 </context-param>
 
 
-<servlet>
-       <servlet-name>jaxws-servlet</servlet-name>
-       <servlet-class>
-              com.sun.xml.ws.transport.http.servlet.WSSpringServlet
-       </servlet-class>
-</servlet>
-
-<servlet-mapping>
-       <servlet-name>jaxws-servlet</servlet-name>
-       <url-pattern>/jaxws-spring</url-pattern>
-</servlet-mapping>
 
 </web-app>

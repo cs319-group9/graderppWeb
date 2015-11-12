@@ -12,7 +12,8 @@ import java.util.List;
 @Service(value = "graderppService")
 public class GraderppServiceImpl implements GraderppService {
 
-    List<User> userList;
+    private List<User> userList;
+    public enum UserType { STUDENT, INSTRUCTOR, ASSISTANT };
 
     @PostConstruct
     public void init()

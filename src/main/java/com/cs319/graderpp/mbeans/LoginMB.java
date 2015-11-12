@@ -9,6 +9,8 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import com.cs319.graderpp.adapter.User;
+import com.cs319.graderpp.misc.Constants;
+import com.cs319.graderpp.misc.Redirection;
 import com.cs319.graderpp.service.GraderppService;
 
 import java.io.IOException;
@@ -19,11 +21,9 @@ import java.util.List;
  * Created by burak on 07.11.2015.
  */
 
-
-
 @ManagedBean
 @SessionScoped
-public class LoginManagedBean {
+public class LoginMB {
 
     @ManagedProperty("#{graderppService}")
     private GraderppService graderppService;
@@ -33,7 +33,13 @@ public class LoginManagedBean {
     private User signedUser;
 
     @PostConstruct
-    public void init(){}
+    public void init(){
+        if( isSignedIn())
+        {
+            Redirection.toHomePage();
+        }
+
+    }
 
     public void login() {
         List<User> users = graderppService.getUserList();
@@ -43,6 +49,16 @@ public class LoginManagedBean {
            if(user.getUsername().equals(username) &&
                    user.getPassword().equals(password)) {
                signedUser = user;
+
+               switch( user.getUserType() )
+               {
+                   case Constants.ASSISTANT:
+                       break;
+                   case Constants.INSTRUCTOR:
+                       break;
+                   case Constants.STUDENT:
+                       break;
+               }
            }
         }
 
@@ -55,6 +71,8 @@ public class LoginManagedBean {
         {
             context.addMessage(null, new FacesMessage("Welcome " + signedUser.getUsername()));
         }
+
+        Redirection.toHomePage();
     }
 
     public boolean isSignedIn()

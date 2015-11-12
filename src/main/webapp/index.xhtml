@@ -10,7 +10,17 @@
 </h:head>
 
 <h:body>
-   <h:outputText>Hello World!</h:outputText>
+    <h:form>
+        <p:panel id="basic" header="Course Select" footer="Home" style="margin-bottom:20px">
+            <h:panelGrid columns="2" cellpadding="10">
+                <p:outputLabel value="#{homepageMB.welcomeMessage}"/>
+                <br />
+
+                <p:menu model="#{homepageMB.menu}" />
+
+            </h:panelGrid>
+        </p:panel>
+    </h:form>
 </h:body>
 
 </html>

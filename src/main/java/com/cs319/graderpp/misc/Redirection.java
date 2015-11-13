@@ -7,7 +7,11 @@ import java.io.IOException;
  * Created by burak on 12.11.2015.
  */
 public final class Redirection {
-    public static void toSubmitPage() { redirectTo("submissio"); }
+    public static void toSubmitPage() {
+        redirectTo("submissio");
+        System.out.println("hello");
+    }
+    
     public static void toLoginPage() { redirectTo("login"); }
     public static void toHomePage() { redirectTo("index"); }
     public static void toCoursesPage(){redirectTo("courses");}

@@ -9,6 +9,7 @@ import java.io.IOException;
 public final class Redirection {
     public static void toLoginPage() { redirectTo("login"); }
     public static void toHomePage() { redirectTo("index"); }
+    public static void toCoursesPage(){redirectTo("courses");}
 
     public static void redirectTo(String viewName)
     {

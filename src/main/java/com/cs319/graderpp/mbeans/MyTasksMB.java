@@ -2,20 +2,26 @@ package com.cs319.graderpp.mbeans;
 
 import com.cs319.graderpp.adapter.Instructor;
 import com.cs319.graderpp.adapter.Student;
+import com.cs319.graderpp.adapter.Submission;
+import com.cs319.graderpp.adapter.Task;
 import com.cs319.graderpp.components.InstructorMenu;
 import com.cs319.graderpp.components.StudentMenu;
 import com.cs319.graderpp.misc.Constants;
 import com.cs319.graderpp.misc.Redirection;
 import com.cs319.graderpp.service.GraderppService;
+import org.joda.time.DateTime;
 import org.primefaces.context.ApplicationContext;
 import org.primefaces.model.menu.*;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,7 +30,7 @@ import java.util.List;
 
 @ManagedBean
 @ViewScoped
-public class HomepageMB {
+public class MyTasksMB {
 
     @ManagedProperty("#{graderppService}")
     private GraderppService service;
@@ -32,8 +38,8 @@ public class HomepageMB {
     @ManagedProperty("#{loginMB}")
     private LoginMB loginMB;
 
-    private String welcomeMessage;
     private MenuModel menu;
+    private List<Task> tasks;
 
     @PostConstruct
     public void init() {
@@ -41,29 +47,22 @@ public class HomepageMB {
             Redirection.toLoginPage();
         } else {
             loadComponents();
+
+            tasks = ((Student) loginMB.getSignedUser()).getTasks();
         }
+
     }
 
     public void loadComponents()
     {
-        this.welcomeMessage = "Welcome to Grader++ !";
-        switch (loginMB.getSignedUser().getUserType())
-        {
-            case Constants.STUDENT:
-                menu = new StudentMenu((Student) loginMB.getSignedUser() );
-                break;
-            case Constants.INSTRUCTOR:
-                menu = new InstructorMenu();
-                break;
-            case Constants.ASSISTANT:
-                menu = new DefaultMenuModel();
-                break;
-            default:
-                menu = null;
-                break;
-        }
-
+        menu = new StudentMenu((Student) loginMB.getSignedUser() );
     }
+
+    public Submission getSubmission(Task task)
+    {
+        return task.getSubmissionFrom((Student) loginMB.getSignedUser());
+    }
+
 
     public MenuModel getMenu() {
         return menu;
@@ -81,13 +80,14 @@ public class HomepageMB {
         this.loginMB = loginMB;
     }
 
-    public String getWelcomeMessage() {
-        return welcomeMessage;
+    public List<Task> getTasks() {
+        return tasks;
     }
 
-    public void setWelcomeMessage(String welcomeMessage) {
-        this.welcomeMessage = welcomeMessage;
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
     }
+
 
     public GraderppService getService() {
         return service;
@@ -97,10 +97,6 @@ public class HomepageMB {
         this.service = service;
     }
 
-    public String redirectTo(String path)
-    {
-        return path + ".xhtml";
-    }
     /*    public String goToStudentInfo(){
         return "studentInfo.xhtml";
     }

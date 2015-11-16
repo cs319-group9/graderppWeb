@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <title>Grader++</title>
+</h:head>
+
+<h:body>
+
+    <h:form>
+        <p:growl id="growl" showDetail="true" sticky="true" />
+
+        <div class="ui-grid ui-grid-responsive">
+            <p:tabMenu activeIndex="#{param.i}">
+                <p:menuitem value="Homepage" outcome="/index.xhtml" icon="ui-icon-star">
+                    <f:param name="i" value="0" />
+                </p:menuitem>
+                <p:menuitem value="Submit Code" outcome="/submission.xhtml" icon="ui-icon-search">
+                    <f:param name="i" value="1" />
+                </p:menuitem>
+
+            </p:tabMenu>
+
+
+
+            <div class="ui-grid-row">
+
+                <div class="ui-grid-col-3" >
+                    <p:panel id="menu" header="Menu" footer="Home" style="margin-bottom:20px">
+
+                        <p:outputLabel value="#{homepageMB.welcomeMessage}"/>
+                        <p:menu model="#{homepageMB.menu}" />
+                    </p:panel>
+                </div>
+
+                <div class="ui-grid-col-9">
+                    <p:panel id="basic" header="Quick Submission" footer="Home" style="margin-bottom:20px">
+
+                        <h:panelGrid columns="2" cellpadding="5">
+                            <p:outputLabel for="task" value="Task: " />
+                            <p:selectOneMenu id="task" value="#{submissionMB.selectedTaskId}">
+                                <f:selectItems value="#{submissionMB.tasks}" />
+                            </p:selectOneMenu>
+
+
+                            <p:commandButton value="Reset" type="reset" />
+                            <p:commandButton value="Submit" action="#{submissionMB.submit()}" update="growl"/>
+                            <p:commandButton value="Return to Home Page"
+                                             icon="ui-icon-arrowreturnthick-1-w" />
+
+                        </h:panelGrid>
+
+                    </p:panel>
+                </div>
+            </div>
+        </div>
+
+    </h:form>
+</h:body>
+
+</html>

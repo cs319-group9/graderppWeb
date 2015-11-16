@@ -11,15 +11,13 @@ import java.util.List;
 public class Student extends User {
 
     private int studentId;
-    private List<String> courses;
+    private List<Task> tasks;
 
     public Student(String username, String password, int studentId) {
         super(username, password, Constants.STUDENT);
         this.studentId = studentId;
-        this.courses = new ArrayList<String>();
-        this.courses.add("HUM111");
-        this.courses.add("MATH101");
-        this.courses.add("CS101");
+        this.tasks = new ArrayList<Task>();
+
     }
 
     public int getStudentId() {
@@ -30,11 +28,11 @@ public class Student extends User {
         this.studentId = studentId;
     }
 
-    public List<String> getCourses() {
-        return courses;
+    public List<Task> getTasks() {
+        return tasks;
     }
 
-    public void setCourses(List<String> courses) {
-        this.courses = courses;
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
     }
 }

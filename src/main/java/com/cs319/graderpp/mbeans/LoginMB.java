@@ -8,6 +8,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import com.cs319.graderpp.adapter.Student;
 import com.cs319.graderpp.adapter.User;
 import com.cs319.graderpp.misc.Constants;
 import com.cs319.graderpp.misc.Redirection;
@@ -70,9 +71,19 @@ public class LoginMB {
         else
         {
             context.addMessage(null, new FacesMessage("Welcome " + signedUser.getUsername()));
+            Redirection.toHomePage();
         }
 
-        Redirection.toHomePage();
+
+    }
+
+    public void logout()
+    {
+        if( isSignedIn() )
+        {
+            signedUser = null;
+            Redirection.toLoginPage();
+        }
     }
 
     public boolean isSignedIn()

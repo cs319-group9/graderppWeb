@@ -1,6 +1,7 @@
 package com.cs319.graderpp.components;
 
 import com.cs319.graderpp.adapter.Student;
+import com.cs319.graderpp.adapter.Task;
 import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.DefaultSubMenu;
@@ -15,34 +16,34 @@ public class StudentMenu extends DefaultMenuModel {
         //First submenu
         DefaultSubMenu firstSubmenu = new DefaultSubMenu("Submission");
         DefaultMenuItem item = new DefaultMenuItem("Quick Submission");
-        item.setCommand("#{homepageManagedBean.goToQuickSubmission()}");
+        item.setUrl("submission.xhtml");
         item.setIcon("ui-icon-plus");
         firstSubmenu.addElement(item);
 
         item = new DefaultMenuItem("My Submissions");
-        item.setCommand("#{homepageManagedBean.goToMySubmissions()}");
         item.setIcon("ui-icon-document");
+        item.setUrl("my-tasks.xhtml");
         firstSubmenu.addElement(item);
 
         //Second submenu
-        DefaultSubMenu myCourses = new DefaultSubMenu("My Courses");
+        DefaultSubMenu myTasks = new DefaultSubMenu("My Tasks");
 
-        if(student.getCourses().size() > 0 ) {
-            for (String course : student.getCourses()) {
-                item = new DefaultMenuItem(course);
+        if(student.getTasks().size() > 0 ) {
+            for (Task task : student.getTasks()) {
+                item = new DefaultMenuItem(task.getTaskName());
                 //item.setCommand("#{homepageManagedBean.goToMySubmissions()}");
                 item.setIcon("ui-icon-document");
-                myCourses.addElement(item);
+                myTasks.addElement(item);
 
             }
         } else {
-            item = new DefaultMenuItem("No course");
+            item = new DefaultMenuItem("No task");
             item.setDisabled(true);
             item.setIcon("ui-icon-plus");
-            myCourses.addElement(item);
+            myTasks.addElement(item);
         }
 
         addElement(firstSubmenu);
-        addElement(myCourses);
+        addElement(myTasks);
     }
 }

@@ -20,15 +20,15 @@ public class StudentMenu extends DefaultMenuModel {
         item.setIcon("ui-icon-plus");
         firstSubmenu.addElement(item);
 
-        item = new DefaultMenuItem("My Submissions");
+        item = new DefaultMenuItem("My Tasks");
         item.setIcon("ui-icon-document");
         item.setUrl("my-tasks.xhtml");
         firstSubmenu.addElement(item);
 
         //Second submenu
-        DefaultSubMenu myTasks = new DefaultSubMenu("My Tasks");
+        DefaultSubMenu profile = new DefaultSubMenu("Profile");
 
-        if(student.getAssignedTasks().size() > 0 ) {
+        /*if(student.getAssignedTasks().size() > 0 ) {
             for (Task task : student.getAssignedTasks()) {
                 item = new DefaultMenuItem(task.getTaskName());
                 //item.setCommand("#{homepageManagedBean.goToMySubmissions()}");
@@ -36,14 +36,14 @@ public class StudentMenu extends DefaultMenuModel {
                 myTasks.addElement(item);
 
             }
-        } else {
-            item = new DefaultMenuItem("No task");
-            item.setDisabled(true);
-            item.setIcon("ui-icon-plus");
-            myTasks.addElement(item);
-        }
+        } else {*/
+
+        item = new DefaultMenuItem("Logout");
+        item.setCommand("#{loginMB.logout()}");
+        profile.addElement(item);
+
 
         addElement(firstSubmenu);
-        addElement(myTasks);
+        addElement(profile);
     }
 }

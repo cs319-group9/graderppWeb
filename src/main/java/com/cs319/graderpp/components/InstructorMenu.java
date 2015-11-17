@@ -11,30 +11,27 @@ import org.primefaces.model.menu.DefaultSubMenu;
 public class InstructorMenu extends DefaultMenuModel{
 
     public InstructorMenu(Instructor instructor) {
-        DefaultSubMenu firstSubmenu = new DefaultSubMenu("Account");
-
-        DefaultMenuItem item = new DefaultMenuItem("Select Courses");
-        item.setIcon("ui-icon-suitcase");
+        //First submenu
+        DefaultSubMenu firstSubmenu = new DefaultSubMenu("System Management");
+        DefaultMenuItem item = new DefaultMenuItem("Task Manager");
+        item.setUrl("task-manager.xhtml");
+        item.setIcon("ui-icon-document");
         firstSubmenu.addElement(item);
 
-        item = new DefaultMenuItem("Schedule");
-        //item.setDisabled(true);
-        item.setIcon("ui-icon-calendar");
+        item = new DefaultMenuItem("Course Manager");
+        item.setIcon("ui-icon-document");
+        item.setUrl("course-manager.xhtml");
         firstSubmenu.addElement(item);
 
         //Second submenu
-        DefaultSubMenu secondSubmenu = new DefaultSubMenu("Account");
-
-        item = new DefaultMenuItem("Account Info");
-        item.setIcon("ui-icon-key");
-        //item.setDisabled(true);
-        secondSubmenu.addElement(item);
+        DefaultSubMenu profile = new DefaultSubMenu("Profile");
 
         item = new DefaultMenuItem("Logout");
-        item.setIcon("ui-icon-close");
-        secondSubmenu.addElement(item);
+        item.setCommand("#{loginMB.logout()}");
+        profile.addElement(item);
+
 
         addElement(firstSubmenu);
-        addElement(secondSubmenu);
+        addElement(profile);
     }
 }

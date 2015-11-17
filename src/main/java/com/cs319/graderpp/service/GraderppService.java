@@ -1,5 +1,6 @@
 package com.cs319.graderpp.service;
 
+import com.cs319.graderpp.adapter.Course;
 import com.cs319.graderpp.adapter.Submission;
 import com.cs319.graderpp.adapter.Task;
 import com.cs319.graderpp.adapter.User;
@@ -16,4 +17,7 @@ public interface GraderppService {
     public void setTaskList(List<Task> taskList);
     public void addSubmission(Submission submission);
     public Task findTaskById (int taskId);
+    public Course findCourseById(int courseId);
+    public User findUserById(int userId);
+    public Submission findSubmissionById(int submissionId);
 }

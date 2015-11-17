@@ -47,7 +47,7 @@ public class SubmissionMB extends PageControllerMB {
     @Override
     public void loadComponents()
     {
-        setMenu(new StudentMenu((Student) getLoginMB().getSignedUser() ));
+        loadMenu( getLoginMB().getSignedUser() );
     }
 
     public void submit()

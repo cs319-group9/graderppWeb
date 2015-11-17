@@ -4,8 +4,10 @@ import com.cs319.graderpp.adapter.Assistant;
 import com.cs319.graderpp.adapter.Course;
 import com.cs319.graderpp.adapter.Instructor;
 import com.cs319.graderpp.adapter.Task;
+import org.primefaces.component.tabview.TabView;
 
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,13 +16,13 @@ import java.util.List;
  * Created by burak on 17.11.2015.
  */
 
-@ViewScoped
+@RequestScoped
 @ManagedBean
 public class TaskManagerMB extends PageControllerMB {
 
     private List<Task> tasks;
     private Task selectedTask;
-    private int tabIndex;
+    private TabView tabView;
 
     @Override
     public void loadData()
@@ -45,7 +47,7 @@ public class TaskManagerMB extends PageControllerMB {
     @Override
     public void loadComponents()
     {
-
+        loadMenu(getLoginMB().getSignedUser());
     }
 
 
@@ -85,11 +87,17 @@ public class TaskManagerMB extends PageControllerMB {
         this.selectedTask = selectedTask;
     }
 
-    public int getTabIndex() {
-        return tabIndex;
+    public TabView getTabView() {
+        return tabView;
     }
 
-    public void setTabIndex(int tabIndex) {
-        this.tabIndex = tabIndex;
+    public void setTabView(TabView tabView) {
+        this.tabView = tabView;
+    }
+
+    public void changeTabAndSetTask(int index, Task task)
+    {
+        setSelectedTask(task);
+        tabView.setActiveIndex(index);
     }
 }

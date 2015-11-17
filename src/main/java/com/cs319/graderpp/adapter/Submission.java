@@ -15,8 +15,7 @@ public class Submission {
 
 
 
-    public Submission(int submissionId, Student submitter, DateTime submissionDate, Task task) {
-        this.submissionId = submissionId;
+    public Submission(Student submitter, DateTime submissionDate, Task task) {
         this.submissionDate = submissionDate;
         this.submitter = submitter;
         this.task = task;

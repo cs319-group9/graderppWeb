@@ -7,6 +7,7 @@ import java.util.List;
  * Created by burak on 17.11.2015.
  */
 public class Course {
+    private int courseId;
     private String courseCode;
     private String courseName;
     private List<Task> tasks;
@@ -19,6 +20,14 @@ public class Course {
         this.tasks = new ArrayList<Task>();
         this.instructors = new ArrayList<Instructor>();
         this.students = new ArrayList<Student>();
+    }
+
+    public int getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(int courseId) {
+        this.courseId = courseId;
     }
 
     public String getCourseCode() {

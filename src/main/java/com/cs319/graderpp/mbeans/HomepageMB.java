@@ -31,21 +31,7 @@ public class HomepageMB extends PageControllerMB {
     @Override
     public void loadComponents()
     {
-
-        switch (getLoginMB().getSignedUser().getUserType())
-        {
-            case Constants.STUDENT:
-                setMenu(new StudentMenu((Student) getLoginMB().getSignedUser() ));
-                break;
-            case Constants.INSTRUCTOR:
-                setMenu(new InstructorMenu((Instructor) getLoginMB().getSignedUser() ));
-                break;
-            case Constants.ASSISTANT:
-                setMenu(new DefaultMenuModel());
-                break;
-            default:
-                break;
-        }
+        loadMenu(getLoginMB().getSignedUser());
 
     }
 

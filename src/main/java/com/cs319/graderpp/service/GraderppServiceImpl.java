@@ -13,6 +13,7 @@ public class GraderppServiceImpl implements GraderppService {
     private List<User> userList;
     private List<Task> taskList;
     private List<Course> courseList;
+    private List<Submission> submissionList;
 
     @PostConstruct
     public void init()
@@ -20,14 +21,18 @@ public class GraderppServiceImpl implements GraderppService {
         courseList = prepareCourseList();
         taskList = prepareTaskList();
         userList = prepareUserList();
+        submissionList = new ArrayList<Submission>();
     }
 
     private List<Task> prepareTaskList()
     {
         List<Task> tasks = new ArrayList<Task>();
-        Task t1 = new Task(4, courseList.get(0), "lab1", "20 dec.");
-        Task t2 = new Task(2, courseList.get(1), "hw1", "19 dec.");
-        Task t3 = new Task(10, courseList.get(2), "hw2", "23 dec.");
+        Task t1 = new Task(courseList.get(0), "lab1", "20 dec.");
+        t1.setTaskId(4);
+        Task t2 = new Task(courseList.get(1), "hw1", "19 dec.");
+        t2.setTaskId(2);
+        Task t3 = new Task(courseList.get(2), "hw2", "23 dec.");
+        t3.setTaskId(10);
 
         courseList.get(0).addTask(t1);
         courseList.get(0).addTask(t2);
@@ -82,6 +87,34 @@ public class GraderppServiceImpl implements GraderppService {
         return null;
     }
 
+
+    public Course findCourseById(int courseId){
+        for(Course course: courseList)
+        {
+            if(course.getCourseId() == courseId)
+                return course;
+        }
+        return null;
+    }
+
+    public User findUserById(int userId){
+        for(User user: userList)
+        {
+            if(user.getUserId() == userId)
+                return user;
+        }
+        return  null;
+    }
+
+    public Submission findSubmissionById(int submissionId){
+        for(Submission submission: submissionList)
+        {
+            if(submission.getSubmissionId() == submissionId)
+                return submission;
+        }
+        return null;
+    }
+
     public List<Task> getTaskList() {
         return taskList;
     }
@@ -96,5 +129,21 @@ public class GraderppServiceImpl implements GraderppService {
 
     public void setUserList(List<User> userList) {
         this.userList = userList;
+    }
+
+    public List<Course> getCourseList() {
+        return courseList;
+    }
+
+    public void setCourseList(List<Course> courseList) {
+        this.courseList = courseList;
+    }
+
+    public List<Submission> getSubmissionList() {
+        return submissionList;
+    }
+
+    public void setSubmissionList(List<Submission> submissionList) {
+        this.submissionList = submissionList;
     }
 }

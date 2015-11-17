@@ -15,8 +15,7 @@ public class Task {
     private List<Submission> submissions;
     private Assistant assistant;
 
-    public Task(int taskId, Course course, String taskName, String dueDate) {
-        this.taskId = taskId;
+    public Task(Course course, String taskName, String dueDate) {
         this.course = course;
         this.taskName = taskName;
         this.dueDate = dueDate;

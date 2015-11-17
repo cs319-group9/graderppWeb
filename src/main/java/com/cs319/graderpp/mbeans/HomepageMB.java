@@ -24,62 +24,37 @@ import java.util.List;
 
 @ManagedBean
 @ViewScoped
-public class HomepageMB {
-
-    @ManagedProperty("#{graderppService}")
-    private GraderppService service;
-
-    @ManagedProperty("#{loginMB}")
-    private LoginMB loginMB;
+public class HomepageMB extends PageControllerMB {
 
     private String welcomeMessage;
-    private MenuModel menu;
 
-    @PostConstruct
-    public void init() {
-        if( !loginMB.isSignedIn() ) {
-            Redirection.toLoginPage();
-        } else {
-            loadComponents();
-        }
-    }
-
+    @Override
     public void loadComponents()
     {
-        this.welcomeMessage = "Welcome to Grader++ !";
-        switch (loginMB.getSignedUser().getUserType())
+
+        switch (getLoginMB().getSignedUser().getUserType())
         {
             case Constants.STUDENT:
-                menu = new StudentMenu((Student) loginMB.getSignedUser() );
+                setMenu(new StudentMenu((Student) getLoginMB().getSignedUser() ));
                 break;
             case Constants.INSTRUCTOR:
-                menu = new InstructorMenu();
+                setMenu(new InstructorMenu((Instructor) getLoginMB().getSignedUser() ));
                 break;
             case Constants.ASSISTANT:
-                menu = new DefaultMenuModel();
+                setMenu(new DefaultMenuModel());
                 break;
             default:
-                menu = null;
                 break;
         }
 
     }
 
-    public MenuModel getMenu() {
-        return menu;
+    @Override
+    public void loadData()
+    {
+        this.welcomeMessage = "Welcome to Grader++ !";
     }
 
-    public void setMenu(MenuModel menu) {
-        this.menu = menu;
-    }
-
-    public LoginMB getLoginMB() {
-        return loginMB;
-    }
-
-    public void setLoginMB(LoginMB loginMB) {
-        this.loginMB = loginMB;
-    }
 
     public String getWelcomeMessage() {
         return welcomeMessage;
@@ -88,28 +63,6 @@ public class HomepageMB {
     public void setWelcomeMessage(String welcomeMessage) {
         this.welcomeMessage = welcomeMessage;
     }
-
-    public GraderppService getService() {
-        return service;
-    }
-
-    public void setService(GraderppService service) {
-        this.service = service;
-    }
-
-    public String redirectTo(String path)
-    {
-        return path + ".xhtml";
-    }
-    /*    public String goToStudentInfo(){
-        return "studentInfo.xhtml";
-    }
-    /*
-    public void goToMainPage() throws IOException {
-        FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
-    }*/
-
-
 
 }
 

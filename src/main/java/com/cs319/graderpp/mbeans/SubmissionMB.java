@@ -30,37 +30,24 @@ import java.util.List;
 
 @ManagedBean
 @ViewScoped
-public class SubmissionMB {
+public class SubmissionMB extends PageControllerMB {
 
-    @ManagedProperty("#{graderppService}")
-    private GraderppService service;
-
-    @ManagedProperty("#{loginMB}")
-    private LoginMB loginMB;
-
-    private MenuModel menu;
     private List<SelectItem> tasks;
     private int selectedTaskId = -1;
 
-    @PostConstruct
-    public void init() {
-        if( !loginMB.isSignedIn() ) {
-            Redirection.toLoginPage();
-        } else {
-            loadComponents();
-
-            tasks = new ArrayList<SelectItem>();
-            for( Task task : service.getTaskList() ) {
-                tasks.add(new SelectItem( task.getTaskId() , task.getCourseCode() + " - " + task.getTaskName() ) );
-            }
-
+    @Override
+    public void loadData()
+    {
+        tasks = new ArrayList<SelectItem>();
+        for( Task task : getService().getTaskList() ) {
+            tasks.add(new SelectItem( task.getTaskId() , task.getCourse().getCourseCode() + " - " + task.getTaskName() ) );
         }
-
     }
 
+    @Override
     public void loadComponents()
     {
-        menu = new StudentMenu((Student) loginMB.getSignedUser() );
+        setMenu(new StudentMenu((Student) getLoginMB().getSignedUser() ));
     }
 
     public void submit()
@@ -73,10 +60,10 @@ public class SubmissionMB {
         else
         {
             int randId = (int)(Math.random() * 1000);
-            Task tmpTask = service.findTaskById(selectedTaskId);
-            Submission submission = new Submission( randId, (Student) loginMB.getSignedUser(), DateTime.now(), tmpTask);
+            Task tmpTask = getService().findTaskById(selectedTaskId);
+            Submission submission = new Submission( randId, (Student) getLoginMB().getSignedUser(), DateTime.now(), tmpTask);
 
-            service.addSubmission(submission);
+            getService().addSubmission(submission);
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Submission Made to the Task: " + selectedTaskId));
         }
     }
@@ -89,21 +76,6 @@ public class SubmissionMB {
         this.selectedTaskId = selectedTaskId;
     }
 
-    public MenuModel getMenu() {
-        return menu;
-    }
-
-    public void setMenu(MenuModel menu) {
-        this.menu = menu;
-    }
-
-    public LoginMB getLoginMB() {
-        return loginMB;
-    }
-
-    public void setLoginMB(LoginMB loginMB) {
-        this.loginMB = loginMB;
-    }
 
     public List<SelectItem> getTasks() {
         return tasks;
@@ -112,23 +84,6 @@ public class SubmissionMB {
     public void setTasks(List<SelectItem> tasks) {
         this.tasks = tasks;
     }
-
-    public GraderppService getService() {
-        return service;
-    }
-
-    public void setService(GraderppService service) {
-        this.service = service;
-    }
-
-    /*    public String goToStudentInfo(){
-        return "studentInfo.xhtml";
-    }
-    /*
-    public void goToMainPage() throws IOException {
-        FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
-    }*/
-
 
 
 }

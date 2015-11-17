@@ -9,17 +9,26 @@ import java.util.List;
 public class Task {
 
     private int taskId;
-    private String courseCode;
+    private Course course;
     private String taskName;
     private String dueDate;
     private List<Submission> submissions;
+    private Assistant assistant;
 
-    public Task(int taskId, String courseCode, String taskName, String dueDate) {
+    public Task(int taskId, Course course, String taskName, String dueDate) {
         this.taskId = taskId;
-        this.courseCode = courseCode;
+        this.course = course;
         this.taskName = taskName;
         this.dueDate = dueDate;
         this.submissions = new ArrayList<Submission>();
+    }
+
+    public Assistant getAssistant() {
+        return assistant;
+    }
+
+    public void setAssistant(Assistant assistant) {
+        this.assistant = assistant;
     }
 
     public List<Submission> getSubmissions() {
@@ -40,12 +49,12 @@ public class Task {
         this.submissions = submissions;
     }
 
-    public String getCourseCode() {
-        return courseCode;
+    public Course getCourse() {
+        return course;
     }
 
-    public void setCourseCode(String courseCode) {
-        this.courseCode = courseCode;
+    public void setCourse(Course course) {
+        this.course = course;
     }
 
     public String getTaskName() {

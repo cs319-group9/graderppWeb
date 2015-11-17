@@ -30,14 +30,15 @@
 
                     <div class="ui-grid-col-3" >
                         <p:panel id="menu" header="Menu" footer="Home" style="margin-bottom:20px">
-
-                        <p:outputLabel value="#{homepageMB.welcomeMessage}"/>
-                            <p:menu model="#{homepageMB.menu}" />
+                            <p:menu model="#{myTasksMB.menu}" />
                         </p:panel>
                     </div>
 
                     <div class="ui-grid-col-9">
-                        <p:panel id="basic" header="My Tasks" footer="Home" style="margin-bottom:20px">
+                        <p:panel rendered="#{!myTasksMB.isAuthorized()}" id="error" header="My Tasks" footer="Home" style="margin-bottom:20px">
+                            <p:outputLabel>You cannot see this page.</p:outputLabel>
+                        </p:panel>
+                        <p:panel rendered="#{myTasksMB.isAuthorized()}" id="basic" header="My Tasks" footer="Home" style="margin-bottom:20px">
 
                             <p:dataTable var="task" value="#{myTasksMB.tasks}">
                                 <f:facet name="header">
@@ -53,14 +54,16 @@
                                     <h:outputText value="#{task.dueDate}" />
                                 </p:column>
                                 <p:column headerText="Course">
-                                    <h:outputText value="#{task.courseCode}" />
+                                    <h:outputText value="#{task.course.courseCode}" />
                                 </p:column>
                                 <p:column>
                                         <p:rowToggler rendered="#{not empty myTasksMB.getSubmission(task)}"/>
                                         <p:outputLabel rendered="#{not empty myTasksMB.getSubmission(task)}">
                                             Show Submission
                                         </p:outputLabel>
-                                        <p:commandButton value="Make Submission" action="submission.xhtml" rendered="#{empty myTasksMB.getSubmission(task)}" />
+                                        <h:commandButton value="Make Submission" action="submission.xhtml" rendered="#{empty myTasksMB.getSubmission(task)}">
+                                            <f:setPropertyActionListener target="#{submissionMB.selectedTaskId}" value="#{task.taskId}" />
+                                        </h:commandButton>
                                 </p:column>
 
                                 <p:rowExpansion>

@@ -1,26 +1,19 @@
 package com.cs319.graderpp.mbeans;
 
-import com.cs319.graderpp.adapter.Instructor;
+import com.cs319.graderpp.adapter.Course;
 import com.cs319.graderpp.adapter.Student;
 import com.cs319.graderpp.adapter.Submission;
 import com.cs319.graderpp.adapter.Task;
-import com.cs319.graderpp.components.InstructorMenu;
 import com.cs319.graderpp.components.StudentMenu;
-import com.cs319.graderpp.misc.Constants;
 import com.cs319.graderpp.misc.Redirection;
 import com.cs319.graderpp.service.GraderppService;
-import org.joda.time.DateTime;
-import org.primefaces.context.ApplicationContext;
-import org.primefaces.model.menu.*;
+import org.primefaces.mobile.component.page.Page;
+import org.primefaces.model.menu.MenuModel;
 
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,54 +23,35 @@ import java.util.List;
 
 @ManagedBean
 @ViewScoped
-public class MyTasksMB {
+public class MyTasksMB extends PageControllerMB {
 
-    @ManagedProperty("#{graderppService}")
-    private GraderppService service;
-
-    @ManagedProperty("#{loginMB}")
-    private LoginMB loginMB;
-
-    private MenuModel menu;
     private List<Task> tasks;
 
-    @PostConstruct
-    public void init() {
-        if( !loginMB.isSignedIn() ) {
-            Redirection.toLoginPage();
-        } else {
-            loadComponents();
-
-            tasks = ((Student) loginMB.getSignedUser()).getTasks();
-        }
-
+    @Override
+    public void loadData()
+    {
+        tasks = ((Student) getLoginMB().getSignedUser()).getAssignedTasks();
     }
 
+    @Override
     public void loadComponents()
     {
-        menu = new StudentMenu((Student) loginMB.getSignedUser() );
+        loadMenu( getLoginMB().getSignedUser() );
     }
 
     public Submission getSubmission(Task task)
     {
-        return task.getSubmissionFrom((Student) loginMB.getSignedUser());
+        return task.getSubmissionFrom((Student) getLoginMB().getSignedUser());
     }
 
-
-    public MenuModel getMenu() {
-        return menu;
-    }
-
-    public void setMenu(MenuModel menu) {
-        this.menu = menu;
-    }
-
-    public LoginMB getLoginMB() {
-        return loginMB;
-    }
-
-    public void setLoginMB(LoginMB loginMB) {
-        this.loginMB = loginMB;
+    @Override
+    public boolean isAuthorized()
+    {
+        if( getLoginMB().getSignedUser() instanceof Student)
+        {
+            return true;
+        }
+        return false;
     }
 
     public List<Task> getTasks() {
@@ -87,25 +61,5 @@ public class MyTasksMB {
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
     }
-
-
-    public GraderppService getService() {
-        return service;
-    }
-
-    public void setService(GraderppService service) {
-        this.service = service;
-    }
-
-    /*    public String goToStudentInfo(){
-        return "studentInfo.xhtml";
-    }
-    /*
-    public void goToMainPage() throws IOException {
-        FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
-    }*/
-
-
-
 }
 

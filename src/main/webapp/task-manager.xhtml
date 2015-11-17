@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <title>Grader++</title>
+</h:head>
+
+<h:body>
+
+<h:form>
+
+    <div class="ui-grid ui-grid-responsive">
+            <p:tabMenu activeIndex="#{param.i}">
+                <p:menuitem value="Homepage" outcome="/index.xhtml" icon="ui-icon-star">
+                    <f:param name="i" value="0" />
+                </p:menuitem>
+                <p:menuitem value="Submit Code" outcome="/submission.xhtml" icon="ui-icon-search">
+                    <f:param name="i" value="1" />
+                </p:menuitem>
+
+            </p:tabMenu>
+
+
+
+                <div class="ui-grid-row">
+
+                    <div class="ui-grid-col-3" >
+                        <p:panel id="menu" header="Menu" footer="Home" style="margin-bottom:20px">
+                            <p:menu model="#{taskManagerMB.menu}" />
+                        </p:panel>
+                    </div>
+
+                    <div class="ui-grid-col-9">
+                        <p:panel rendered="#{!taskManagerMB.isAuthorized()}" id="error" header="My Tasks" footer="Home" style="margin-bottom:20px">
+                            <p:outputLabel>You cannot see this page.</p:outputLabel>
+                        </p:panel>
+                        <p:panel rendered="#{taskManagerMB.isAuthorized()}" id="basic" header="My Tasks" footer="Home" style="margin-bottom:20px">
+
+                            <p:tabView  activeIndex="#{taskManagerMB.tabIndex}">
+                                <p:tab title="Tasks">
+
+                                    <p:dataTable var="task" value="#{taskManagerMB.tasks}">
+                                        <f:facet name="header">
+                                            Tasks
+                                        </f:facet>
+                                        <p:column headerText="Id">
+                                            <h:outputText value="#{task.taskId}" />
+                                        </p:column>
+                                        <p:column headerText="Name">
+                                            <h:outputText value="#{task.taskName}" />
+                                        </p:column>
+                                        <p:column headerText="Due">
+                                            <h:outputText value="#{task.dueDate}" />
+                                        </p:column>
+                                        <p:column headerText="Course">
+                                            <h:outputText value="#{task.course.courseCode}" />
+                                        </p:column>
+                                        <p:column headerText="Show Submissions" style="width:32px;text-align: center">
+                                            <p:commandButton update=":#{p:component('showSubmissions')}" oncomplete="PF('submissionsDG').show()" icon="ui-icon-search" title="View">
+                                                <f:setPropertyActionListener value="#{task}" target="#{taskManagerMB.selectedTask}" />
+                                            </p:commandButton>
+                                        </p:column>
+                                        <p:column headerText="Show Submissions">
+                                            <p:rowToggler />
+                                        </p:column>
+                                        <p:column headerText="Edit Task" style="width:32px;text-align: center">
+                                            <p:commandButton update=":#{p:component('taskEdit')}"  icon="ui-icon-search" title="View">
+                                                <f:setPropertyActionListener value="#{task}" target="#{taskManagerMB.selectedTask}" />
+                                            </p:commandButton>
+                                        </p:column>
+
+                                        <p:rowExpansion>
+                                            <p:dataTable var="submission" value="#{task.submissions}">
+                                            <f:facet name="header">
+                                                Submissions made to #{task.taskName}
+                                            </f:facet>
+                                            <p:column headerText="Submitter">
+                                                <h:outputText value="#{submission.submitter.username}" />
+                                            </p:column>
+                                            <p:column headerText="Submission Date">
+                                                <h:outputText value="#{submission.submissionDate.toString()}" />
+                                            </p:column>
+                                            <p:column headerText="ID">
+                                                <h:outputText value="#{submission.submissionId}" />
+                                            </p:column>
+                                            <p:column headerText="Evaluated?">
+                                                <h:outputText value="#{submission.evaluated}" />
+                                            </p:column>
+                                            <p:column headerText="Grade">
+                                                <h:outputText value="#{submission.grade}" />
+                                            </p:column>
+                                            </p:dataTable>
+                                        </p:rowExpansion>
+                                    </p:dataTable>
+
+
+                                </p:tab>
+
+
+
+
+
+
+
+                                <p:tab title="Add Task" rendered="#{taskManagerMB.isInstructor()}">
+                                    <h:panelGrid columns="2" cellpadding="10">
+                                        <p:graphicImage name="demo/images/godfather/godfather2.jpg" />
+                                        <h:outputText value="Francis Ford Coppola's legendary..." />
+                                    </h:panelGrid>
+                                </p:tab>
+
+
+
+
+
+
+
+
+                                <p:tab title="Edit Task" >
+                                    <p:panel id="taskEdit" rendered="#{not empty taskManagerMB.selectedTask}">
+                                        <p:outputLabel value="#{taskManagerMB.selectedTask.taskName} is selected" />
+                                    </p:panel>
+                                    <p:commandButton value="Delete Task" rendered="#{taskManagerMB.isInstructor()}" />
+                                </p:tab>
+                            </p:tabView>
+
+
+                            <p:dialog header="Submissions" widgetVar="submissionsDG" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                                <p:dataTable id="showSubmissions" var="submission" value="#{task.submissions}">
+                                    <f:facet name="header">
+                                        Submissions made to #{task.taskName}
+                                    </f:facet>
+                                    <p:column headerText="Submitter">
+                                        <h:outputText value="#{submission.submitter.username}" />
+                                    </p:column>
+                                    <p:column headerText="Submission Date">
+                                        <h:outputText value="#{submission.submissionDate.toString()}" />
+                                    </p:column>
+                                    <p:column headerText="ID">
+                                        <h:outputText value="#{submission.submissionId}" />
+                                    </p:column>
+                                    <p:column headerText="Evaluated?">
+                                        <h:outputText value="#{submission.evaluated}" />
+                                    </p:column>
+                                    <p:column headerText="Grade">
+                                        <h:outputText value="#{submission.grade}" />
+                                    </p:column>
+                                </p:dataTable>
+                            </p:dialog>
+
+
+                        </p:panel>
+                    </div>
+                </div>
+        </div>
+
+    </h:form>
+</h:body>
+
+</html>

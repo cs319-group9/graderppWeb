@@ -1,5 +1,6 @@
 package com.cs319.graderpp.components;
 
+import com.cs319.graderpp.adapter.Instructor;
 import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.DefaultSubMenu;
@@ -9,7 +10,7 @@ import org.primefaces.model.menu.DefaultSubMenu;
  */
 public class InstructorMenu extends DefaultMenuModel{
 
-    public InstructorMenu() {
+    public InstructorMenu(Instructor instructor) {
         DefaultSubMenu firstSubmenu = new DefaultSubMenu("Account");
 
         DefaultMenuItem item = new DefaultMenuItem("Select Courses");

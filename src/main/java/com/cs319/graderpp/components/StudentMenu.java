@@ -28,8 +28,8 @@ public class StudentMenu extends DefaultMenuModel {
         //Second submenu
         DefaultSubMenu myTasks = new DefaultSubMenu("My Tasks");
 
-        if(student.getTasks().size() > 0 ) {
-            for (Task task : student.getTasks()) {
+        if(student.getAssignedTasks().size() > 0 ) {
+            for (Task task : student.getAssignedTasks()) {
                 item = new DefaultMenuItem(task.getTaskName());
                 //item.setCommand("#{homepageManagedBean.goToMySubmissions()}");
                 item.setIcon("ui-icon-document");

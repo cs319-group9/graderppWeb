@@ -12,10 +12,12 @@ public class GraderppServiceImpl implements GraderppService {
 
     private List<User> userList;
     private List<Task> taskList;
+    private List<Course> courseList;
 
     @PostConstruct
     public void init()
     {
+        courseList = prepareCourseList();
         taskList = prepareTaskList();
         userList = prepareUserList();
     }
@@ -23,22 +25,45 @@ public class GraderppServiceImpl implements GraderppService {
     private List<Task> prepareTaskList()
     {
         List<Task> tasks = new ArrayList<Task>();
-        tasks.add(new Task(4, "CS224", "lab1_224", "20 dec."));
-        tasks.add(new Task(2, "CS202", "hw1_224", "19 dec."));
-        tasks.add(new Task(10, "CS102", "hw2_224", "23 dec."));
+        Task t1 = new Task(4, courseList.get(0), "lab1", "20 dec.");
+        Task t2 = new Task(2, courseList.get(1), "hw1", "19 dec.");
+        Task t3 = new Task(10, courseList.get(2), "hw2", "23 dec.");
+
+        courseList.get(0).addTask(t1);
+        courseList.get(0).addTask(t2);
+        courseList.get(1).addTask(t3);
+
+        tasks.add(t1);
+        tasks.add(t2);
+        tasks.add(t3);
         return tasks;
     }
 
+    private List<Course> prepareCourseList()
+    {
+        List<Course> courses = new ArrayList<Course>();
+        courses.add(new Course("CS224", "Computer Organization"));
+        courses.add(new Course("CS202", "Data Structures"));
+        courses.add(new Course("CS102", "Introduction to Programming"));
+        return courses;
+    }
     private List<User> prepareUserList()
     {
         List<User> users = new ArrayList<User>();
-        Student u1 = new Student("student", "password", 123);
-        u1.setTasks(taskList);
+        Student u1 = new Student("student", "123", 123);
+        u1.setCourses(courseList);
 
-        User u2 = new Instructor("instructor", "password");
+        Instructor u2 = new Instructor("instructor", "123");
+        u2.setCourses(courseList);
+
+        Assistant u3 = new Assistant("ta", "123");
+        List<Task> ts = new ArrayList<Task>();
+        ts.add(courseList.get(1).getTasks().get(0));
+        u3.setTasks(ts);
 
         users.add(u1);
         users.add(u2);
+        users.add(u3);
         return users;
     }
 

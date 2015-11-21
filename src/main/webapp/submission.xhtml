@@ -11,7 +11,7 @@
 
 <h:body>
 
-    <h:form>
+    <h:form enctype="multipart/form-data">
         <p:growl id="growl" showDetail="true" sticky="true" />
 
         <div class="ui-grid ui-grid-responsive">
@@ -40,17 +40,21 @@
 
                         <h:panelGrid columns="2" cellpadding="5">
                             <p:outputLabel for="task" value="Task: " />
+
                             <p:selectOneMenu id="task" value="#{submissionMB.selectedTaskId}">
                                 <f:selectItems value="#{submissionMB.tasks}" />
                             </p:selectOneMenu>
+                            </h:panelGrid>
 
+                            <p:fileUpload value="#{submissionMB.file}" mode="simple" skinSimple="true" />
+                            <br />
 
-                            <p:commandButton value="Reset" type="reset" />
-                            <p:commandButton value="Submit" action="#{submissionMB.submit()}" update="growl"/>
-                            <p:commandButton value="Return to Home Page"
-                                             icon="ui-icon-arrowreturnthick-1-w" />
+                            <p:commandButton value="Submit" actionListener="#{submissionMB.submit()}" update="growl"     ajax="false"/>
 
-                        </h:panelGrid>
+                            <p:commandButton value="Download the uploaded file" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="ui-icon-arrowthick-1-s">
+                                <p:fileDownload value="#{submissionMB.file}" />
+                            </p:commandButton>
+
 
                     </p:panel>
                 </div>

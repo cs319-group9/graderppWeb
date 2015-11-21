@@ -4,11 +4,14 @@ import com.cs319.graderpp.adapter.Assistant;
 import com.cs319.graderpp.adapter.Course;
 import com.cs319.graderpp.adapter.Instructor;
 import com.cs319.graderpp.adapter.Task;
+import org.primefaces.component.tabview.Tab;
 import org.primefaces.component.tabview.TabView;
+import org.primefaces.context.RequestContext;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,5 +102,31 @@ public class TaskManagerMB extends PageControllerMB {
     {
         setSelectedTask(task);
         tabView.setActiveIndex(index);
+    }
+
+    public void selectTask(Task task)
+    {
+        setSelectedTask(task);
+        RequestContext.getCurrentInstance().update(":addTabPanels");
+        RequestContext.getCurrentInstance().update(":editTabPanel");
+        RequestContext.getCurrentInstance().update(":submissionTabPanel");
+
+        Tab t1 = tabView.findTab(":addTab");
+        Tab t2 = tabView.findTab(":editTab");
+        System.out.println(t1 + " " + t2);
+
+        for(Tab tab : tabView.getLoadedTabs())
+        {
+            System.out.println(tab.getAriaLabel() + tab.getClientId() + tab.getId());
+        }
+
+        System.out.println(selectedTask.getTaskName());
+
+        /*Tab submissionTab = tabView.getLoadedTabs();
+        setSelectedTask(task);
+        submissionTab.setLoaded(true);
+        submissionTab.setDisabled(false);
+        submissionTab.setTitle("new title");
+        */
     }
 }

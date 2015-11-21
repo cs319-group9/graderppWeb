@@ -38,7 +38,7 @@
                         </p:panel>
                         <p:panel rendered="#{taskManagerMB.isAuthorized()}" id="basic" header="My Tasks" footer="Home" style="margin-bottom:20px">
 
-                            <p:tabView binding="#{taskManagerMB.tabView}" dynamic="true" >
+                            <p:tabView binding="#{taskManagerMB.tabView}" dynamic="true" cache="false">
                                 <p:tab title="Tasks">
 
                                     <p:dataTable var="task" value="#{taskManagerMB.tasks}">
@@ -57,17 +57,36 @@
                                         <p:column headerText="Course">
                                             <h:outputText value="#{task.course.courseCode}" />
                                         </p:column>
-                                        <p:column headerText="Show Submissions" style="text-align: center">
+                                        <!--<p:column headerText="Show Submissions" style="text-align: center">
                                             <p:commandButton update=":#{p:component('showSubmissions')}" oncomplete="PF('submissionsDG').show()" icon="ui-icon-search" title="View">
                                                 <f:setPropertyActionListener value="#{task}" target="#{taskManagerMB.selectedTask}" />
                                             </p:commandButton>
+                                        </p:column>-->
+
+                                        <p:column headerText="Show Submissions" style="text-align: center">
+                                            <p:commandButton update=":submissionTabPanel :editTabPanel" ajax="false"
+                                                             actionListener="#{taskManagerMB.changeTabAndSetTask(3, task)}"
+                                                             icon="ui-icon-search" title="View">
+                                                <!--<f:setPropertyActionListener value="#{task}" target="#{taskManagerMB.selectedTask}" />-->
+                                                <!--<f:param name="selectedTask" value="#{task}" />-->
+                                            </p:commandButton>
                                         </p:column>
+
                                         <!--<p:column headerText="Show Submissions">
                                             <p:rowToggler />
                                         </p:column>-->
                                         <p:column headerText="Edit Task" style="text-align: center">
-                                            <p:commandButton update=":#{p:component('taskEdit')}" ajax="false"
+                                            <p:commandButton  ajax="false"
                                                              actionListener="#{taskManagerMB.changeTabAndSetTask(2, task)}"
+                                                             icon="ui-icon-search" title="View">
+                                                <!--<f:setPropertyActionListener value="#{task}" target="#{taskManagerMB.selectedTask}" />-->
+                                                <!--<f:param name="selectedTask" value="#{task}" />-->
+                                            </p:commandButton>
+                                        </p:column>
+
+                                        <p:column headerText="Select" style="text-align: center">
+                                            <p:commandButton  ajax="false"
+                                                             action="#{taskManagerMB.selectTask(task)}"
                                                              icon="ui-icon-search" title="View">
                                                 <!--<f:setPropertyActionListener value="#{task}" target="#{taskManagerMB.selectedTask}" />-->
                                                 <!--<f:param name="selectedTask" value="#{task}" />-->
@@ -101,19 +120,49 @@
 
                                 </p:tab>
 
-                                <p:tab title="Add Task" rendered="#{taskManagerMB.isInstructor()}">
+                                <p:tab id="addTab" title="Add Task" rendered="#{taskManagerMB.isInstructor()}">
+                                    <p:panel id="addTabPanel">
                                     <h:panelGrid columns="2" cellpadding="10">
                                         <p:graphicImage name="demo/images/godfather/godfather2.jpg" />
                                         <h:outputText value="Francis Ford Coppola's legendary..." />
                                     </h:panelGrid>
+                                    </p:panel>
                                 </p:tab>
 
 
-                                <p:tab title="Edit Task" >
-                                    <p:panel id="taskEdit" rendered="#{not empty taskManagerMB.selectedTask}">
+
+                                <p:tab id="editTab" title="Edit Task" >
+
+                                    <p:panel id="editTabPanel" rendered="#{not empty taskManagerMB.selectedTask}">
                                         <p:outputLabel value="#{taskManagerMB.selectedTask.taskName} is selected" />
+                                        <p:commandButton value="Delete Task" rendered="#{not empty taskManagerMB.selectedTask and taskManagerMB.isInstructor()}" />
                                     </p:panel>
-                                    <p:commandButton value="Delete Task" rendered="#{not empty taskManagerMB.selectedTask and taskManagerMB.isInstructor()}" />
+                                </p:tab>
+
+                                <p:tab id="submissionTab" title="Submissions">
+                                    <p:panel id="submissionTabPanel" rendered="#{not empty taskManagerMB.selectedTask}">
+                                        <p:dataTable var="submission" value="#{taskManagerMB.selectedTask.submissions}">
+                                            <f:facet name="header">
+                                                Submissions made to #{task.taskName}
+                                            </f:facet>
+                                            <p:column headerText="Submitter">
+                                                <h:outputText value="#{submission.submitter.username}" />
+                                            </p:column>
+                                            <p:column headerText="Submission Date">
+                                                <h:outputText value="#{submission.submissionDate.toString()}" />
+                                            </p:column>
+                                            <p:column headerText="ID">
+                                                <h:outputText value="#{submission.submissionId}" />
+                                            </p:column>
+                                            <p:column headerText="Evaluated?">
+                                                <h:outputText value="#{submission.evaluated}" />
+                                            </p:column>
+                                            <p:column headerText="Grade">
+                                                <h:outputText value="#{submission.grade}" />
+                                            </p:column>
+                                        </p:dataTable>
+
+                                    </p:panel>
                                 </p:tab>
 
                             </p:tabView>

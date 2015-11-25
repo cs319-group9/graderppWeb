@@ -48,19 +48,29 @@ public class GraderppServiceImpl implements GraderppService {
     private List<Course> prepareCourseList()
     {
         List<Course> courses = new ArrayList<Course>();
-        courses.add(new Course((int)(Math.random() * 10000), "CS224", "Computer Organization"));
-        courses.add(new Course((int)(Math.random() * 10000), "CS202", "Data Structures"));
-        courses.add(new Course((int)(Math.random() * 10000), "CS102", "Introduction to Programming"));
+        Course c1 = new Course("CS224", "Computer Organization");
+        c1.setCourseId((int)(Math.random() * 10000));
+
+        Course c2 = new Course("CS202", "Data Structures");
+        c2.setCourseId((int)(Math.random() * 10000));
+
+        Course c3 = new Course("CS102", "Introduction to Programming");
+        c3.setCourseId((int)(Math.random() * 10000));
+
+        courses.add(c1);
+        courses.add(c2);
+        courses.add(c3);
+
         return courses;
     }
     private List<User> prepareUserList()
     {
         List<User> users = new ArrayList<User>();
-        Student u1 = new Student("student", "123", 123, "Burak Ali");
+        Student u1 = new Student("st", "123", 123, "Burak Ali");
         u1.setUserId((int)(Math.random() * 1000));
         u1.setCourses(courseList);
 
-        Instructor u2 = new Instructor("instructor", "123", "Al-Muderris");
+        Instructor u2 = new Instructor("in", "123", "Al-Muderris");
         u2.setUserId((int)(Math.random() * 1000));
         u2.setCourses(courseList);
 
@@ -86,6 +96,50 @@ public class GraderppServiceImpl implements GraderppService {
         submission.getTask().getSubmissions().add(submission);
     }
 
+    public List<Task> findAllTasksOfUser(User user)
+    {
+        List<Task> tasks = new ArrayList<Task>();
+        if(user instanceof Student)
+        {
+            for( Course course : ((Student) user).getCourses())
+            {
+                for( Task task: course.getTasks())
+                {
+                    tasks.add(task);
+                }
+            }
+        }
+        else if (user instanceof Assistant)
+        {
+            for ( Task task : ((Assistant) user).getTasks() )
+            {
+                tasks.add(task);
+            }
+        }
+        else if ( user instanceof Instructor)
+        {
+            tasks = getTaskList();
+        }
+        return tasks;
+    }
+
+    public void addTask(Task task) {
+        taskList.add(task);
+
+        //update the course and assistant's references
+        task.getCourse().getTasks().add(task);
+        task.getAssistant().getTasks().add(task);
+
+    }
+
+    public void addCourse(Course course)
+    {
+        courseList.add(course);
+
+        //TODO update neseccary things
+    }
+
+
     public Task findTaskById (int taskId)
     {
         for(Task task: taskList)
@@ -94,6 +148,23 @@ public class GraderppServiceImpl implements GraderppService {
                 return task;
         }
         return null;
+    }
+
+    public void updateTask(int taskId, Task newTask)
+    {
+        int index = -1;
+        for(int i = 0; i < taskList.size(); i++)
+        {
+            if(taskId == taskList.get(i).getTaskId() )
+            {
+                index = i;
+                break;
+            }
+        }
+        if(index != -1)
+        {
+            taskList.set(index, newTask);
+        }
     }
 
 

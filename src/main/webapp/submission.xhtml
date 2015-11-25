@@ -41,10 +41,12 @@
                         <h:panelGrid columns="2" cellpadding="5">
                             <p:outputLabel for="task" value="Task: " />
 
-                            <p:selectOneMenu id="task" value="#{submissionMB.selectedTaskId}">
-                                <f:selectItems value="#{submissionMB.tasks}" />
+                            <p:selectOneMenu id="task" converter="#{taskConverter}" value="#{submissionMB.selectedTask}">
+                                <f:selectItems value="#{submissionMB.tasks}" var="task"
+                                               itemLabel="#{task.taskName}" itemValue="#{task}" />
                             </p:selectOneMenu>
-                            </h:panelGrid>
+
+                        </h:panelGrid>
 
                             <p:fileUpload value="#{submissionMB.file}" mode="simple" skinSimple="true" />
                             <br />

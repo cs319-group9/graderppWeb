@@ -42,8 +42,8 @@
 
                             <p:commandButton value="New Task" onclick="PF('addTaskDG').show();" type="button" icon="ui-icon-extlink" />
 
-                            <p:tabView id="tabVW" binding="#{taskManagerMB.tabView}" dynamic="true" cache="false">
-                                <p:tab title="Tasks">
+                            <p:wizard widgetVar="taskWizard" showNavBar="false"><!-- flowListener="#{taskManagerMB.onFlowProcess}">-->
+                                <p:tab id="tasksTab" title="Tasks">
 
                                     <p:dataTable id="tasksDT" var="task" value="#{taskManagerMB.tasks}">
                                         <f:facet name="header">
@@ -67,12 +67,10 @@
                                             </p:commandButton>
                                         </p:column>-->
 
-                                        <p:column headerText="Show Submissions" style="text-align: center">
-                                            <p:commandButton update=":submissionTabPanel :editTabPanel" ajax="false"
-                                                             actionListener="#{taskManagerMB.changeTabAndSetTask(3, task)}"
-                                                             icon="ui-icon-search" title="View">
-                                                <!--<f:setPropertyActionListener value="#{task}" target="#{taskManagerMB.selectedTask}" />-->
-                                                <!--<f:param name="selectedTask" value="#{task}" />-->
+                                        <p:column headerText="Submissions" style="text-align: center">
+
+                                            <p:commandButton icon="ui-icon-search" oncomplete="PF('taskWizard').next()" update=":main-form:submissionTabPanel">
+                                                <f:setPropertyActionListener value="#{task}" target="#{taskManagerMB.selectedTask}" />
                                             </p:commandButton>
                                         </p:column>
 
@@ -80,11 +78,9 @@
                                             <p:rowToggler />
                                         </p:column>-->
                                         <p:column headerText="Edit Task" style="text-align: center">
-                                            <p:commandButton  ajax="false"
-                                                             actionListener="#{taskManagerMB.changeTabAndSetTask(2, task)}"
-                                                             icon="ui-icon-search" title="View">
-                                                <!--<f:setPropertyActionListener value="#{task}" target="#{taskManagerMB.selectedTask}" />-->
-                                                <!--<f:param name="selectedTask" value="#{task}" />-->
+
+                                            <p:commandButton onclick="PF('editTaskDG').show();" type="button" icon="ui-icon-pencil" >
+                                                <f:setPropertyActionListener value="#{task}" target="#{taskManagerMB.tempTask}" />
                                             </p:commandButton>
                                         </p:column>
 
@@ -158,19 +154,19 @@
 
 
 
-                                <p:tab id="editTab" title="Edit Task" >
+                                <!--<p:tab id="editTab" title="Edit Task" >
 
                                     <p:panel id="editTabPanel" rendered="#{not empty taskManagerMB.selectedTask}">
                                         <p:outputLabel value="#{taskManagerMB.selectedTask.taskName} is selected" />
                                         <p:commandButton value="Delete Task" rendered="#{not empty taskManagerMB.selectedTask and taskManagerMB.isInstructor()}" />
                                     </p:panel>
-                                </p:tab>
+                                </p:tab>-->
 
                                 <p:tab id="submissionTab" title="Submissions">
                                     <p:panel id="submissionTabPanel" rendered="#{not empty taskManagerMB.selectedTask}">
                                         <p:dataTable var="submission" value="#{taskManagerMB.selectedTask.submissions}">
                                             <f:facet name="header">
-                                                Submissions made to #{task.taskName}
+                                                Submissions made to <p:outputLabel value="#{taskManagerMB.selectedTask.taskName}" />
                                             </f:facet>
                                             <p:column headerText="Submitter">
                                                 <h:outputText value="#{submission.submitter.username}" />
@@ -189,10 +185,41 @@
                                             </p:column>
                                         </p:dataTable>
 
+                                        <p:commandButton value="Back to Tasks" icon="ui-icon-arrowreturn-1-w" onclick="PF('taskWizard').back()" />
+
                                     </p:panel>
                                 </p:tab>
 
-                            </p:tabView>
+                            </p:wizard>
+
+                            <p:dialog header="Edit Task" widgetVar="editTaskDG" focus="taskName">
+                                <h:panelGrid columns="2" cellpadding="5">
+
+                                    <p:outputLabel for="selectedCourse2" value="Course: " />
+                                    <p:selectOneMenu id="selectedCourse2" converter="#{courseConverter}" value="#{taskManagerMB.tempTask.course}">
+                                        <f:selectItems value="#{taskManagerMB.service.courseList}" var="course"
+                                                       itemLabel="#{course.courseCode}" itemValue="#{course}" />
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel for="taskName2" value="Task Name: " />
+                                    <p:inputText id="taskName2" value="#{taskManagerMB.tempTask.taskName}" />
+
+                                    <p:outputLabel for="dueDate2" value="Due Date: " />
+                                    <p:calendar id="dueDate2" value="#{taskManagerMB.tempTask.dueDate}" pattern="dd-MM-yyyy" mask="true" />
+
+                                    <p:outputLabel for="assistant2" value="Assistant: " />
+                                    <p:selectOneMenu id="assistant2" converter="#{assistantConverter}" value="#{taskManagerMB.tempTask.assistant}">
+                                        <f:selectItems value="#{taskManagerMB.service.findAllAssistants()}" var="assistant"
+                                                       itemLabel="#{assistant.fullName}" itemValue="#{assistant}" />
+                                    </p:selectOneMenu>
+
+                                    <p:commandButton value="Save Changes" oncomplete="PF('editTaskDG').hide()" action="#{taskManagerMB.editTask()}" update=":main-form:growl :main-form:tasksDT"/>
+                                    <p:commandButton value="Cancel" oncomplete="PF('editTaskDG').hide()"
+                                                     immediate="true" icon="ui-icon-close" />
+
+                                    <p:commandButton value="Reset" type="reset" />
+                                </h:panelGrid>
+                            </p:dialog>
 
                             <p:dialog header="New Task" widgetVar="addTaskDG" focus="taskName">
                                 <h:panelGrid columns="2" cellpadding="5">
@@ -215,9 +242,9 @@
                                                        itemLabel="#{assistant.fullName}" itemValue="#{assistant}" />
                                     </p:selectOneMenu>
 
-                                    <p:commandButton value="Add" oncomplete="PF('addTaskDG').hide()" action="#{taskManagerMB.addTask()}" update=":main-form:growl :main-form:tabVW:tasksDT"/>
+                                    <p:commandButton value="Add" oncomplete="PF('addTaskDG').hide()" action="#{taskManagerMB.addTask()}" update=":main-form:growl :main-form:tasksDT"/>
                                     <p:commandButton value="Cancel" oncomplete="PF('addTaskDG').hide()"
-                                                     immediate="true" icon="ui-icon-arrowreturnthick-1-w" />
+                                                     immediate="true" icon="ui-icon-close" />
 
                                     <p:commandButton value="Reset" type="reset" />
 
@@ -227,7 +254,7 @@
                             <p:dialog header="Submissions" widgetVar="submissionsDG" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                                 <p:dataTable id="showSubmissions" var="submission" value="#{taskManagerMB.selectedTask.submissions}">
                                     <f:facet name="header">
-                                        Submissions made to #{task.taskName}
+                                        Submissions made to #{taskManagerMB.selectedTask.taskName}
                                     </f:facet>
                                     <p:column headerText="Submitter">
                                         <h:outputText value="#{submission.submitter.username}" />

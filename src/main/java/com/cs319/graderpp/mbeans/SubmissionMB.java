@@ -27,17 +27,14 @@ import java.util.List;
 @ViewScoped
 public class SubmissionMB extends PageControllerMB {
 
-    private List<SelectItem> tasks;
-    private int selectedTaskId = -1;
+    private List<Task> tasks;
+    private Task selectedTask;
     private UploadedFile file;
 
     @Override
     public void loadData()
     {
-        tasks = new ArrayList<SelectItem>();
-        for( Task task : getService().getTaskList() ) {
-            tasks.add(new SelectItem( task.getTaskId() , task.getCourse().getCourseCode() + " - " + task.getTaskName() ) );
-        }
+        tasks = getService().findAllTasksOfUser((Student) getLoginMB().getSignedUser());
     }
 
     @Override
@@ -49,15 +46,15 @@ public class SubmissionMB extends PageControllerMB {
     public void submit() throws IOException
     {
         // if task id is not set dont send
-        if(selectedTaskId == -1)
+        if(selectedTask == null)
         {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Submission not made"));
         }
         else
         {
             int randId = (int)(Math.random() * 1000);
-            Task tmpTask = getService().findTaskById(selectedTaskId);
-            Submission submission = new Submission( (Student) getLoginMB().getSignedUser(), DateTime.now(), tmpTask);
+
+            Submission submission = new Submission( (Student) getLoginMB().getSignedUser(), DateTime.now(), selectedTask);
             submission.setSubmissionId(randId);
 
             //code below copies the uploaded file to the system
@@ -78,24 +75,23 @@ public class SubmissionMB extends PageControllerMB {
 
             getService().addSubmission(submission);
 
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Submission Made to the Task: " + selectedTaskId));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Submission Made to the Task: " + selectedTask.getTaskId()));
         }
     }
 
-    public int getSelectedTaskId() {
-        return selectedTaskId;
+    public Task getSelectedTask() {
+        return selectedTask;
     }
 
-    public void setSelectedTaskId(int selectedTaskId) {
-        this.selectedTaskId = selectedTaskId;
+    public void setSelectedTask(Task selectedTask) {
+        this.selectedTask = selectedTask;
     }
 
-
-    public List<SelectItem> getTasks() {
+    public List<Task> getTasks() {
         return tasks;
     }
 
-    public void setTasks(List<SelectItem> tasks) {
+    public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
     }
 

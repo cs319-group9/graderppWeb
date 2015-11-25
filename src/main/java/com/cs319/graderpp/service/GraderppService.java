@@ -22,4 +22,8 @@ public interface GraderppService {
     public List<Submission> getSubmissionList();
     public void setSubmissionList(List<Submission> submissionList);
     public List<Assistant> findAllAssistants();
+    public void updateTask(int taskId, Task newTask);
+    public List<Task> findAllTasksOfUser(User user);
+    public void addTask(Task task);
+    public void addCourse(Course course);
 }

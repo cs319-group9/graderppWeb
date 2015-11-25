@@ -20,15 +20,19 @@ public class Task {
 
     public Task()
     {
-    }
-
-    public Task(Course course, String taskName, Date dueDate) {
-        this.course = course;
-        this.taskName = taskName;
-        this.dueDate = dueDate;
         this.submissions = new ArrayList<Submission>();
         this.testCaseFiles = new ArrayList<TestCaseFile>();
         this.makeFiles = new ArrayList<MakeFile>();
+    }
+
+    public Task(Course course, String taskName, Date dueDate) {
+        this.submissions = new ArrayList<Submission>();
+        this.testCaseFiles = new ArrayList<TestCaseFile>();
+        this.makeFiles = new ArrayList<MakeFile>();
+
+        this.course = course;
+        this.taskName = taskName;
+        this.dueDate = dueDate;
     }
 
     public List<MakeFile> getMakeFiles() {

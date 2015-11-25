@@ -14,8 +14,14 @@ public class Course {
     private List<Instructor> instructors;
     private List<Student> students;
 
-    public Course(int courseId, String courseCode, String courseName) {
-        this.courseId = courseId;
+    public Course()
+    {
+        this.tasks = new ArrayList<Task>();
+        this.instructors = new ArrayList<Instructor>();
+        this.students = new ArrayList<Student>();
+    }
+
+    public Course(String courseCode, String courseName) {
         this.courseCode = courseCode;
         this.courseName = courseName;
         this.tasks = new ArrayList<Task>();

@@ -1,5 +1,6 @@
 package com.cs319.graderpp.converter;
 
+import com.cs319.graderpp.models.Assistant;
 import com.cs319.graderpp.models.User;
 import com.cs319.graderpp.service.GraderppService;
 
@@ -17,13 +18,13 @@ import javax.faces.convert.Converter;
 
 @ManagedBean
 @RequestScoped
-public class UserConverter implements Converter {
+public class AssistantConverter implements Converter {
 
     @ManagedProperty("#{graderppService}")
     private GraderppService service;
 
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
-        User tmp = service.findUserById(Integer.parseInt(value));
+        Assistant tmp = (Assistant) service.findUserById(Integer.parseInt(value));
         return tmp;
     }
 

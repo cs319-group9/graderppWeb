@@ -1,27 +1,20 @@
 package com.cs319.graderpp.mbeans;
 
-import com.cs319.graderpp.adapter.Instructor;
-import com.cs319.graderpp.adapter.Student;
-import com.cs319.graderpp.adapter.Submission;
-import com.cs319.graderpp.adapter.Task;
-import com.cs319.graderpp.components.InstructorMenu;
-import com.cs319.graderpp.components.StudentMenu;
-import com.cs319.graderpp.misc.Constants;
-import com.cs319.graderpp.misc.Redirection;
-import com.cs319.graderpp.service.GraderppService;
+import com.cs319.graderpp.models.CodeFile;
+import com.cs319.graderpp.models.Student;
+import com.cs319.graderpp.models.Submission;
+import com.cs319.graderpp.models.Task;
 import org.apache.poi.util.IOUtils;
 import org.joda.time.DateTime;
-import org.primefaces.context.ApplicationContext;
+import org.primefaces.context.RequestContext;
 import org.primefaces.model.UploadedFile;
-import org.primefaces.model.menu.*;
 
-import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.servlet.ServletContext;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,21 +60,24 @@ public class SubmissionMB extends PageControllerMB {
             Submission submission = new Submission( (Student) getLoginMB().getSignedUser(), DateTime.now(), tmpTask);
             submission.setSubmissionId(randId);
 
-            /*
-
             //code below copies the uploaded file to the system
+            String path = "/home/burak";//FacesContext.getCurrentInstance().getExternalContext().getRealPath("/");
 
             InputStream input = file.getInputstream();
-            OutputStream output = new FileOutputStream(new File("/home/burak", file.getFileName()));
+            OutputStream output = new FileOutputStream(new File(path, file.getFileName()));
 
             try {
                 IOUtils.copy(input, output);
             } finally {
                 IOUtils.closeQuietly(input);
                 IOUtils.closeQuietly(output);
-            }*/
+            }
+
+            CodeFile codeFile = new CodeFile(file.getFileName(), path + file.getFileName(), file.getInputstream(), file.getSize() );
+            submission.getCodeFiles().add( codeFile);
 
             getService().addSubmission(submission);
+
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Submission Made to the Task: " + selectedTaskId));
         }
     }

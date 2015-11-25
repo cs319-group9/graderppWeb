@@ -1,4 +1,4 @@
-package com.cs319.graderpp.adapter;
+package com.cs319.graderpp.models;
 
 import com.cs319.graderpp.misc.Constants;
 
@@ -11,8 +11,8 @@ public class Assistant extends User {
 
     private List<Task> tasks;
 
-    public Assistant(String username, String password) {
-        super(username, password, Constants.ASSISTANT);
+    public Assistant(String username, String password, String fullName) {
+        super(username, password, fullName);
     }
 
     public List<Task> getTasks() {

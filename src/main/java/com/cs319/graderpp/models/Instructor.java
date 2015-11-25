@@ -1,4 +1,4 @@
-package com.cs319.graderpp.adapter;
+package com.cs319.graderpp.models;
 
 import com.cs319.graderpp.misc.Constants;
 
@@ -10,8 +10,8 @@ import java.util.List;
 public class Instructor extends User {
 
     private List<Course> courses;
-    public Instructor(String username, String password) {
-        super(username, password, Constants.INSTRUCTOR);
+    public Instructor(String username, String password, String fullName) {
+        super(username, password, fullName);
     }
 
     public List<Course> getCourses() {

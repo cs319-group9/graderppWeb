@@ -1,6 +1,6 @@
 package com.cs319.graderpp.converter;
 
-import com.cs319.graderpp.adapter.Course;
+import com.cs319.graderpp.models.Course;
 import com.cs319.graderpp.service.GraderppService;
 
 import javax.faces.bean.ManagedBean;
@@ -28,6 +28,7 @@ public class CourseConverter implements Converter {
 
     public String getAsString(FacesContext context, UIComponent component, Object value) {
         Course tmp = (Course) value;
+        System.out.println("Course name " + tmp.getCourseCode() + " id " + tmp.getCourseId());
         return tmp.getCourseId() + "";
     }
 

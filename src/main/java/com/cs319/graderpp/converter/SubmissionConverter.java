@@ -1,7 +1,6 @@
 package com.cs319.graderpp.converter;
 
-import com.cs319.graderpp.adapter.Course;
-import com.cs319.graderpp.adapter.Submission;
+import com.cs319.graderpp.models.Submission;
 import com.cs319.graderpp.service.GraderppService;
 
 import javax.faces.bean.ManagedBean;

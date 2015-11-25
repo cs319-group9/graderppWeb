@@ -1,26 +1,18 @@
 package com.cs319.graderpp.mbeans;
 
-import com.cs319.graderpp.adapter.*;
+import com.cs319.graderpp.models.*;
 import com.cs319.graderpp.components.AssistantMenu;
 import com.cs319.graderpp.components.InstructorMenu;
 import com.cs319.graderpp.components.StudentMenu;
 import com.cs319.graderpp.misc.Constants;
 import com.cs319.graderpp.misc.Redirection;
 import com.cs319.graderpp.service.GraderppService;
-import org.joda.time.DateTime;
-import org.primefaces.context.ApplicationContext;
 import org.primefaces.model.menu.*;
 
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by burak on 23.07.2015.
@@ -75,20 +67,14 @@ public abstract class PageControllerMB {
             return;
         }
 
-        switch(user.getUserType())
-        {
-            case Constants.STUDENT:
-                setMenu( new StudentMenu((Student) user));
-                break;
-            case Constants.INSTRUCTOR:
-                setMenu( new InstructorMenu((Instructor) user));
-                break;
-            case Constants.ASSISTANT:
-                setMenu( new AssistantMenu((Assistant) user));
-                break;
-            default:
-                break;
+        if(user instanceof Student) {
+            setMenu( new StudentMenu((Student) user));
+        } else if (user instanceof Instructor) {
+            setMenu( new InstructorMenu((Instructor) user));
+        } else if ( user instanceof Assistant) {
+            setMenu( new AssistantMenu((Assistant) user));
         }
+
     }
     public void setMenu(MenuModel menu) {
         this.menu = menu;

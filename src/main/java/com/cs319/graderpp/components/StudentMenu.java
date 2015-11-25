@@ -1,7 +1,6 @@
 package com.cs319.graderpp.components;
 
-import com.cs319.graderpp.adapter.Student;
-import com.cs319.graderpp.adapter.Task;
+import com.cs319.graderpp.models.Student;
 import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.DefaultSubMenu;

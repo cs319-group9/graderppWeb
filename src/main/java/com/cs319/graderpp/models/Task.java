@@ -1,6 +1,7 @@
-package com.cs319.graderpp.adapter;
+package com.cs319.graderpp.models;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -11,15 +12,39 @@ public class Task {
     private int taskId;
     private Course course;
     private String taskName;
-    private String dueDate;
+    private Date dueDate;
     private List<Submission> submissions;
+    private List<MakeFile> makeFiles;
+    private List<TestCaseFile> testCaseFiles;
     private Assistant assistant;
 
-    public Task(Course course, String taskName, String dueDate) {
+    public Task()
+    {
+    }
+
+    public Task(Course course, String taskName, Date dueDate) {
         this.course = course;
         this.taskName = taskName;
         this.dueDate = dueDate;
         this.submissions = new ArrayList<Submission>();
+        this.testCaseFiles = new ArrayList<TestCaseFile>();
+        this.makeFiles = new ArrayList<MakeFile>();
+    }
+
+    public List<MakeFile> getMakeFiles() {
+        return makeFiles;
+    }
+
+    public void setMakeFiles(List<MakeFile> makeFiles) {
+        this.makeFiles = makeFiles;
+    }
+
+    public List<TestCaseFile> getTestCaseFiles() {
+        return testCaseFiles;
+    }
+
+    public void setTestCaseFiles(List<TestCaseFile> testCaseFiles) {
+        this.testCaseFiles = testCaseFiles;
     }
 
     public Assistant getAssistant() {
@@ -72,11 +97,11 @@ public class Task {
         this.taskId = taskId;
     }
 
-    public String getDueDate() {
+    public Date getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(String dueDate) {
+    public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
     }
 }

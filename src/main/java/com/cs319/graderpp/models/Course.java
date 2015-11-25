@@ -1,4 +1,4 @@
-package com.cs319.graderpp.adapter;
+package com.cs319.graderpp.models;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,8 @@ public class Course {
     private List<Instructor> instructors;
     private List<Student> students;
 
-    public Course(String courseCode, String courseName) {
+    public Course(int courseId, String courseCode, String courseName) {
+        this.courseId = courseId;
         this.courseCode = courseCode;
         this.courseName = courseName;
         this.tasks = new ArrayList<Task>();

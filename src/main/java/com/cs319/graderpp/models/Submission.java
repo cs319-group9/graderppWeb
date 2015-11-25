@@ -1,6 +1,10 @@
-package com.cs319.graderpp.adapter;
+package com.cs319.graderpp.models;
 
 import org.joda.time.DateTime;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by burak on 07.11.2015.
  */
@@ -12,14 +16,32 @@ public class Submission {
     private Task task;
     private int grade;
     private boolean evaluated;
-
-
+    private List<CodeFile> codeFiles;
 
     public Submission(Student submitter, DateTime submissionDate, Task task) {
         this.submissionDate = submissionDate;
         this.submitter = submitter;
         this.task = task;
         this.evaluated = false;
+        this.codeFiles = new ArrayList<CodeFile>();
+    }
+
+    public List<CodeFile> getCodeFiles() {
+        return codeFiles;
+    }
+
+    public void setCodeFiles(List<CodeFile> codeFiles) {
+        this.codeFiles = codeFiles;
+    }
+
+    public String filesToString()
+    {
+        String tmp = "";
+        for(CodeFile file: codeFiles)
+        {
+            tmp += "name: " + file.getFileName() + ", path: " + file.getFullPath() + ", size: " + file.getSize() + ";\n";
+        }
+        return tmp;
     }
 
     public int getSubmissionId() {

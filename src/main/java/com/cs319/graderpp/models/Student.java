@@ -1,4 +1,4 @@
-package com.cs319.graderpp.adapter;
+package com.cs319.graderpp.models;
 
 import com.cs319.graderpp.misc.Constants;
 
@@ -14,8 +14,8 @@ public class Student extends User {
     private List<Submission> submissions;
     private List<Course> courses;
 
-    public Student(String username, String password, int studentId) {
-        super(username, password, Constants.STUDENT);
+    public Student(String username, String password, int studentId, String fullName) {
+        super(username, password, fullName);
         this.studentId = studentId;
         this.courses= new ArrayList<Course>();
         this.submissions = new ArrayList<Submission>();

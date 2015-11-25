@@ -1,6 +1,4 @@
-package com.cs319.graderpp.adapter;
-
-import com.cs319.graderpp.service.GraderppServiceImpl;
+package com.cs319.graderpp.models;
 
 /**
  * Created by burak on 07.11.2015.
@@ -8,17 +6,25 @@ import com.cs319.graderpp.service.GraderppServiceImpl;
 public class User {
     private String username;
     private String password;
-    private int userType;
     private int userId;
+    private String fullName;
 
-    public User(String username, String password, int userType) {
+    public User(String username, String password, String fullName) {
         this.username = username;
         this.password = password;
-        this.userType = userType;
+        this.fullName = fullName;
     }
 
     public int getUserId() {
         return userId;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public void setUserId(int userId) {
@@ -41,11 +47,4 @@ public class User {
         this.password = password;
     }
 
-    public int getUserType() {
-        return userType;
-    }
-
-    public void setUserType(int userType) {
-        this.userType = userType;
-    }
 }

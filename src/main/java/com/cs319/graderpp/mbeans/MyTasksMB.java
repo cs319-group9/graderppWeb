@@ -1,20 +1,11 @@
 package com.cs319.graderpp.mbeans;
 
-import com.cs319.graderpp.adapter.Course;
-import com.cs319.graderpp.adapter.Student;
-import com.cs319.graderpp.adapter.Submission;
-import com.cs319.graderpp.adapter.Task;
-import com.cs319.graderpp.components.StudentMenu;
-import com.cs319.graderpp.misc.Redirection;
-import com.cs319.graderpp.service.GraderppService;
-import org.primefaces.mobile.component.page.Page;
-import org.primefaces.model.menu.MenuModel;
+import com.cs319.graderpp.models.Student;
+import com.cs319.graderpp.models.Submission;
+import com.cs319.graderpp.models.Task;
 
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

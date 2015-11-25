@@ -5,17 +5,13 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import com.cs319.graderpp.adapter.Student;
-import com.cs319.graderpp.adapter.User;
+import com.cs319.graderpp.models.User;
 import com.cs319.graderpp.misc.Constants;
 import com.cs319.graderpp.misc.Redirection;
 import com.cs319.graderpp.service.GraderppService;
 
-import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -51,15 +47,6 @@ public class LoginMB {
                    user.getPassword().equals(password)) {
                signedUser = user;
 
-               switch( user.getUserType() )
-               {
-                   case Constants.ASSISTANT:
-                       break;
-                   case Constants.INSTRUCTOR:
-                       break;
-                   case Constants.STUDENT:
-                       break;
-               }
            }
         }
 

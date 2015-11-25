@@ -1,9 +1,6 @@
 package com.cs319.graderpp.service;
 
-import com.cs319.graderpp.adapter.Course;
-import com.cs319.graderpp.adapter.Submission;
-import com.cs319.graderpp.adapter.Task;
-import com.cs319.graderpp.adapter.User;
+import com.cs319.graderpp.models.*;
 
 import java.util.List;
 
@@ -20,4 +17,9 @@ public interface GraderppService {
     public Course findCourseById(int courseId);
     public User findUserById(int userId);
     public Submission findSubmissionById(int submissionId);
+    public List<Course> getCourseList();
+    public void setCourseList(List<Course> courseList);
+    public List<Submission> getSubmissionList();
+    public void setSubmissionList(List<Submission> submissionList);
+    public List<Assistant> findAllAssistants();
 }

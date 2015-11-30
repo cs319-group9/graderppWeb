@@ -1,7 +1,7 @@
 package com.cs319.graderpp.converter;
 
 import com.cs319.graderpp.models.Submission;
-import com.cs319.graderpp.service.GraderppService;
+import com.cs319.graderpp.service.DataService;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -18,11 +18,11 @@ import javax.faces.convert.Converter;
 @RequestScoped
 public class SubmissionConverter implements Converter {
 
-    @ManagedProperty("#{graderppService}")
-    private GraderppService service;
+    @ManagedProperty("#{dataService}")
+    private DataService service;
 
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
-        Submission tmp = service.findSubmissionById(Integer.parseInt(value));
+        Submission tmp = service.getRealDataService().findSubmissionById(Integer.parseInt(value));
         return tmp;
     }
 
@@ -31,11 +31,11 @@ public class SubmissionConverter implements Converter {
         return tmp.getSubmissionId() + "";
     }
 
-    public GraderppService getService() {
+    public DataService getService() {
         return service;
     }
 
-    public void setService(GraderppService service) {
+    public void setService(DataService service) {
         this.service = service;
     }
 }

@@ -10,8 +10,7 @@ import org.primefaces.model.menu.DefaultSubMenu;
  */
 public class StudentMenu extends DefaultMenuModel {
 
-    public StudentMenu(Student student)
-    {
+    public StudentMenu(Student student) {
         //First submenu
         DefaultSubMenu firstSubmenu = new DefaultSubMenu("Submission");
         DefaultMenuItem item = new DefaultMenuItem("Quick Submission");

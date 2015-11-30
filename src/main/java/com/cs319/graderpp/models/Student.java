@@ -17,18 +17,15 @@ public class Student extends User {
     public Student(String username, String password, int studentId, String fullName) {
         super(username, password, fullName);
         this.studentId = studentId;
-        this.courses= new ArrayList<Course>();
+        this.courses = new ArrayList<Course>();
         this.submissions = new ArrayList<Submission>();
 
     }
 
-    public List<Task> getAssignedTasks()
-    {
+    public List<Task> getAssignedTasks() {
         List<Task> tasks = new ArrayList<Task>();
-        for(Course course : courses)
-        {
-            if( course.getTasks().size() > 0)
-            {
+        for (Course course : courses) {
+            if (course.getTasks().size() > 0) {
                 tasks.addAll(course.getTasks());
             }
         }

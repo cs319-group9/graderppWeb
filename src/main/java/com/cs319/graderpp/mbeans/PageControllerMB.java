@@ -6,7 +6,8 @@ import com.cs319.graderpp.components.InstructorMenu;
 import com.cs319.graderpp.components.StudentMenu;
 import com.cs319.graderpp.misc.Constants;
 import com.cs319.graderpp.misc.Redirection;
-import com.cs319.graderpp.service.GraderppService;
+import com.cs319.graderpp.service.DataService;
+import com.cs319.graderpp.service.DataServiceImpl;
 import org.primefaces.model.menu.*;
 
 import javax.annotation.PostConstruct;
@@ -22,8 +23,8 @@ import javax.faces.bean.ViewScoped;
 @ViewScoped
 public abstract class PageControllerMB {
 
-    @ManagedProperty("#{graderppService}")
-    private GraderppService service;
+    @ManagedProperty("#{dataService}")
+    private DataService dataService;
 
     @ManagedProperty("#{loginMB}")
     private LoginMB loginMB;
@@ -32,26 +33,23 @@ public abstract class PageControllerMB {
 
     @PostConstruct
     public void init() {
-        if( !loginMB.isSignedIn() ) {
+        if (!loginMB.isSignedIn()) {
             Redirection.toLoginPage();
-        } else if ( !isAuthorized() ){
+        } else if (!isAuthorized()) {
             loadMenu(loginMB.getSignedUser());
-        }
-        else {
+        } else {
             loadComponents();
             loadData();
         }
     }
 
-    public void loadData()
-    {
+    public void loadData() {
     }
 
-    public void loadComponents()
-    {}
+    public void loadComponents() {
+    }
 
-    public boolean isAuthorized()
-    {
+    public boolean isAuthorized() {
         return true;
     }
 
@@ -60,22 +58,21 @@ public abstract class PageControllerMB {
         return menu;
     }
 
-    public void loadMenu(User user)
-    {
-        if(user == null)
-        {
+    public void loadMenu(User user) {
+        if (user == null) {
             return;
         }
 
-        if(user instanceof Student) {
-            setMenu( new StudentMenu((Student) user));
+        if (user instanceof Student) {
+            setMenu(new StudentMenu((Student) user));
         } else if (user instanceof Instructor) {
-            setMenu( new InstructorMenu((Instructor) user));
-        } else if ( user instanceof Assistant) {
-            setMenu( new AssistantMenu((Assistant) user));
+            setMenu(new InstructorMenu((Instructor) user));
+        } else if (user instanceof Assistant) {
+            setMenu(new AssistantMenu((Assistant) user));
         }
 
     }
+
     public void setMenu(MenuModel menu) {
         this.menu = menu;
     }
@@ -89,15 +86,12 @@ public abstract class PageControllerMB {
     }
 
 
-    public GraderppService getService() {
-        return service;
+    public DataService getDataService() {
+        return dataService;
     }
 
-    public void setService(GraderppService service) {
-        this.service = service;
+    public void setDataService(DataService dataService) {
+        this.dataService = dataService;
     }
-
-
-
 }
 

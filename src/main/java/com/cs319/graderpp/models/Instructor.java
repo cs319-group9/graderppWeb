@@ -10,6 +10,7 @@ import java.util.List;
 public class Instructor extends User {
 
     private List<Course> courses;
+
     public Instructor(String username, String password, String fullName) {
         super(username, password, fullName);
     }

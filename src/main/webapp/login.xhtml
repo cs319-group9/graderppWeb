@@ -11,7 +11,7 @@
 
 <h:body>
     <h:form>
-        <p:growl id="growl" showDetail="true" sticky="true" />
+        <p:growl id="growl" showDetail="true" sticky="true"/>
 
         <p:panel id="basic" header="Grader++ Login Form" footer="Login" style="margin-bottom:20px">
             <h:panelGrid columns="2" cellpadding="10">
@@ -19,7 +19,7 @@
                 <p:inputText maxlength="20" value="#{loginMB.username}"/>
 
                 <p:outputLabel>Password: </p:outputLabel>
-                <p:inputText maxlength="20" value="#{loginMB.password}" />
+                <p:inputText maxlength="20" value="#{loginMB.password}"/>
 
                 <p:commandButton value="Sign in" action="#{loginMB.login()}" update="growl"/>
             </h:panelGrid>

@@ -14,15 +14,13 @@ public class HomepageMB extends PageControllerMB {
     private String welcomeMessage;
 
     @Override
-    public void loadComponents()
-    {
+    public void loadComponents() {
         loadMenu(getLoginMB().getSignedUser());
 
     }
 
     @Override
-    public void loadData()
-    {
+    public void loadData() {
         this.welcomeMessage = "Welcome to Grader++ !";
     }
 

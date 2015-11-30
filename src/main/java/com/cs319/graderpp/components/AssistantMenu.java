@@ -8,7 +8,7 @@ import org.primefaces.model.menu.DefaultSubMenu;
 /**
  * Created by burak on 12.11.2015.
  */
-public class AssistantMenu extends DefaultMenuModel{
+public class AssistantMenu extends DefaultMenuModel {
 
     public AssistantMenu(Assistant assistant) {
         //First submenu

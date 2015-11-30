@@ -30,21 +30,15 @@ public class TaskManagerMB extends PageControllerMB {
     private Task tempTask;
 
     @Override
-    public void loadData()
-    {
-        if ( getLoginMB().getSignedUser() instanceof Instructor)
-        {
+    public void loadData() {
+        if (getLoginMB().getSignedUser() instanceof Instructor) {
             tasks = new ArrayList<Task>();
-            for(Course course: ((Instructor) getLoginMB().getSignedUser()).getCourses())
-            {
-                for(Task task : course.getTasks())
-                {
+            for (Course course : ((Instructor) getLoginMB().getSignedUser()).getCourses()) {
+                for (Task task : course.getTasks()) {
                     tasks.add(task);
                 }
             }
-        }
-        else if( getLoginMB().getSignedUser() instanceof Assistant)
-        {
+        } else if (getLoginMB().getSignedUser() instanceof Assistant) {
             tasks = ((Assistant) getLoginMB().getSignedUser()).getTasks();
         }
 
@@ -52,27 +46,22 @@ public class TaskManagerMB extends PageControllerMB {
     }
 
     @Override
-    public void loadComponents()
-    {
+    public void loadComponents() {
         loadMenu(getLoginMB().getSignedUser());
     }
 
 
     @Override
-    public boolean isAuthorized()
-    {
-        if( getLoginMB().getSignedUser() instanceof Instructor
-            || getLoginMB().getSignedUser() instanceof Assistant)
-        {
+    public boolean isAuthorized() {
+        if (getLoginMB().getSignedUser() instanceof Instructor
+                || getLoginMB().getSignedUser() instanceof Assistant) {
             return true;
         }
         return false;
     }
 
-    public boolean isInstructor()
-    {
-        if( getLoginMB().getSignedUser() instanceof Instructor)
-        {
+    public boolean isInstructor() {
+        if (getLoginMB().getSignedUser() instanceof Instructor) {
             return true;
         }
         return false;
@@ -97,18 +86,16 @@ public class TaskManagerMB extends PageControllerMB {
 
     public void addTask() {
         if (tempTask != null) {
-            tempTask.setTaskId( (int)(Math.random() * 1000) );
+            tempTask.setTaskId((int) (Math.random() * 1000));
 
-            getService().addTask(tempTask);
+            getDataService().getRealDataService().addTask(tempTask);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage("Task added: " + tempTask.getTaskName() + ", ID:" + tempTask.getTaskId()));
 
             //UPDATE THE TASK LIST
-            tasks = getService().getTaskList();
+            tasks = getDataService().getRealDataService().getTaskList();
 
-        }
-        else
-        {
+        } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Task cannot be added!"));
         }
     }

@@ -1,22 +1,20 @@
 package com.cs319.graderpp.mbeans;
 
-import com.cs319.graderpp.models.CodeFile;
-import com.cs319.graderpp.models.Student;
-import com.cs319.graderpp.models.Submission;
-import com.cs319.graderpp.models.Task;
+import com.cs319.graderpp.models.*;
 import org.apache.poi.util.IOUtils;
 import org.joda.time.DateTime;
-import org.primefaces.context.RequestContext;
+import org.primefaces.component.selectonemenu.SelectOneMenu;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import javax.servlet.ServletContext;
+import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.event.ValueChangeEvent;
 import java.io.*;
-import java.util.ArrayList;
+import java.io.File;
 import java.util.List;
 
 /**
@@ -32,36 +30,42 @@ public class SubmissionMB extends PageControllerMB {
     private UploadedFile file;
 
     @Override
-    public void loadData()
-    {
-        tasks = getService().findAllTasksOfUser((Student) getLoginMB().getSignedUser());
+    public void loadData() {
+        tasks = getDataService().getRealDataService().findAllTasksOfUser((Student) getLoginMB().getSignedUser());
     }
 
     @Override
-    public void loadComponents()
-    {
-        loadMenu( getLoginMB().getSignedUser() );
+    public void loadComponents() {
+        loadMenu(getLoginMB().getSignedUser());
     }
 
-    public void submit() throws IOException
+    public void taskChangeListener(ValueChangeEvent event)//AjaxBehaviorEvent event)
     {
-        // if task id is not set dont send
-        if(selectedTask == null)
-        {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Submission not made"));
-        }
-        else
-        {
-            int randId = (int)(Math.random() * 1000);
+        System.out.println("on selectTask event");
+        selectedTask = (Task) event.getNewValue();
+    }
 
-            Submission submission = new Submission( (Student) getLoginMB().getSignedUser(), DateTime.now(), selectedTask);
+    public void handleFileUpload(FileUploadEvent event) throws IOException {
+
+        this.file = event.getFile();
+
+        // if task id is not set dont send
+        if (selectedTask == null) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Submission not made, please select a Task!"));
+        } else {
+            int randId = (int) (Math.random() * 1000);
+
+            Submission submission = new Submission((Student) getLoginMB().getSignedUser(), DateTime.now(), selectedTask);
             submission.setSubmissionId(randId);
 
+
             //code below copies the uploaded file to the system
-            String path = "/home/burak";//FacesContext.getCurrentInstance().getExternalContext().getRealPath("/");
+            String path = "/home/burak/uploadDeneme";//FacesContext.getCurrentInstance().getExternalContext().getRealPath("/");
 
             InputStream input = file.getInputstream();
-            OutputStream output = new FileOutputStream(new File(path, file.getFileName()));
+            OutputStream output = new FileOutputStream(
+                    new File(path, //FacesContext.getCurrentInstance().getExternalContext().getRealPath("//WEB-INF//files//"),
+                            file.getFileName()));
 
             try {
                 IOUtils.copy(input, output);
@@ -70,12 +74,16 @@ public class SubmissionMB extends PageControllerMB {
                 IOUtils.closeQuietly(output);
             }
 
-            CodeFile codeFile = new CodeFile(file.getFileName(), path + file.getFileName(), file.getInputstream(), file.getSize() );
-            submission.getCodeFiles().add( codeFile);
+            //instantiate CodeFile object for each file and add to the submission
+            CodeFile codeFile = new CodeFile(file.getFileName(), path + file.getFileName(), file.getInputstream(), file.getSize());
+            submission.getCodeFiles().add(codeFile);
 
-            getService().addSubmission(submission);
 
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Submission Made to the Task: " + selectedTask.getTaskId()));
+
+            getDataService().getRealDataService().addSubmission(submission);
+
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage("Submission Made to the Task: " + selectedTask.getTaskId()));
         }
     }
 

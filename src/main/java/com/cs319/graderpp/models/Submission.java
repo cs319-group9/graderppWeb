@@ -34,11 +34,9 @@ public class Submission {
         this.codeFiles = codeFiles;
     }
 
-    public String filesToString()
-    {
+    public String filesToString() {
         String tmp = "";
-        for(CodeFile file: codeFiles)
-        {
+        for (CodeFile file : codeFiles) {
             tmp += "name: " + file.getFileName() + ", path: " + file.getFullPath() + ", size: " + file.getSize() + ";\n";
         }
         return tmp;

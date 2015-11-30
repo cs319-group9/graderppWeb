@@ -18,8 +18,7 @@ public class Task {
     private List<TestCaseFile> testCaseFiles;
     private Assistant assistant;
 
-    public Task()
-    {
+    public Task() {
         this.submissions = new ArrayList<Submission>();
         this.testCaseFiles = new ArrayList<TestCaseFile>();
         this.makeFiles = new ArrayList<MakeFile>();
@@ -63,11 +62,9 @@ public class Task {
         return submissions;
     }
 
-    public Submission getSubmissionFrom(Student student)
-    {
-        for(Submission submission :submissions)
-        {
-            if(submission.getSubmitter().getStudentId() == student.getStudentId())
+    public Submission getSubmissionFrom(Student student) {
+        for (Submission submission : submissions) {
+            if (submission.getSubmitter().getStudentId() == student.getStudentId())
                 return submission;
         }
         return null;

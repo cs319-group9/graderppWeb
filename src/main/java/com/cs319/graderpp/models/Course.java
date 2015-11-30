@@ -14,8 +14,7 @@ public class Course {
     private List<Instructor> instructors;
     private List<Student> students;
 
-    public Course()
-    {
+    public Course() {
         this.tasks = new ArrayList<Task>();
         this.instructors = new ArrayList<Instructor>();
         this.students = new ArrayList<Student>();
@@ -61,8 +60,7 @@ public class Course {
         this.tasks = tasks;
     }
 
-    public void addTask(Task task)
-    {
+    public void addTask(Task task) {
         this.tasks.add(task);
     }
 

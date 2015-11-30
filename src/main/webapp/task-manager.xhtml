@@ -11,273 +11,294 @@
 
 <h:body>
 
-<h:form id="main-form">
-    <p:growl id="growl" showDetail="true" sticky="true" />
+    <h:form id="main-form">
+        <p:growl id="growl" showDetail="true" sticky="true"/>
 
 
-    <div class="ui-grid ui-grid-responsive">
+        <div class="ui-grid ui-grid-responsive">
             <p:tabMenu activeIndex="#{param.i}">
                 <p:menuitem value="Homepage" outcome="/index.xhtml" icon="ui-icon-star">
-                    <f:param name="i" value="0" />
+                    <f:param name="i" value="0"/>
                 </p:menuitem>
-                <p:menuitem style="float:right" value="#{loginMB.signedUser.username} [Logout]" action="#{loginMB.logout()}"/>
+                <p:menuitem style="float:right" value="#{loginMB.signedUser.username} [Logout]"
+                            action="#{loginMB.logout()}"/>
 
             </p:tabMenu>
 
 
+            <div class="ui-grid-row">
 
-                <div class="ui-grid-row">
+                <div class="ui-grid-col-3">
+                    <p:panel id="menu" header="Menu" footer="Home" style="margin-bottom:20px">
+                        <p:menu model="#{taskManagerMB.menu}"/>
+                    </p:panel>
+                </div>
 
-                    <div class="ui-grid-col-3" >
-                        <p:panel id="menu" header="Menu" footer="Home" style="margin-bottom:20px">
-                            <p:menu model="#{taskManagerMB.menu}" />
-                        </p:panel>
-                    </div>
+                <div class="ui-grid-col-9">
+                    <p:panel rendered="#{!taskManagerMB.isAuthorized()}" id="error" header="My Tasks" footer="Home"
+                             style="margin-bottom:20px">
+                        <p:outputLabel>You cannot see this page.</p:outputLabel>
+                    </p:panel>
+                    <p:panel rendered="#{taskManagerMB.isAuthorized()}" id="basic" header="My Tasks" footer="Home"
+                             style="margin-bottom:20px">
 
-                    <div class="ui-grid-col-9">
-                        <p:panel rendered="#{!taskManagerMB.isAuthorized()}" id="error" header="My Tasks" footer="Home" style="margin-bottom:20px">
-                            <p:outputLabel>You cannot see this page.</p:outputLabel>
-                        </p:panel>
-                        <p:panel rendered="#{taskManagerMB.isAuthorized()}" id="basic" header="My Tasks" footer="Home" style="margin-bottom:20px">
+                        <p:commandButton value="New Task" onclick="PF('addTaskDG').show();" type="button"
+                                         icon="ui-icon-extlink"/>
 
-                            <p:commandButton value="New Task" onclick="PF('addTaskDG').show();" type="button" icon="ui-icon-extlink" />
+                        <p:wizard widgetVar="taskWizard"
+                                  showNavBar="false"><!-- flowListener="#{taskManagerMB.onFlowProcess}">-->
+                            <p:tab id="tasksTab" title="Tasks">
 
-                            <p:wizard widgetVar="taskWizard" showNavBar="false"><!-- flowListener="#{taskManagerMB.onFlowProcess}">-->
-                                <p:tab id="tasksTab" title="Tasks">
+                                <p:dataTable id="tasksDT" var="task" value="#{taskManagerMB.tasks}">
+                                    <f:facet name="header">
+                                        Tasks
+                                    </f:facet>
+                                    <p:column headerText="Id">
+                                        <h:outputText value="#{task.taskId}"/>
+                                    </p:column>
+                                    <p:column headerText="Name">
+                                        <h:outputText value="#{task.taskName}"/>
+                                    </p:column>
+                                    <p:column headerText="Due">
+                                        <h:outputText value="#{task.dueDate}"/>
+                                    </p:column>
+                                    <p:column headerText="Course">
+                                        <h:outputText value="#{task.course.courseCode}"/>
+                                    </p:column>
+                                    <!--<p:column headerText="Show Submissions" style="text-align: center">
+                                        <p:commandButton update=":#{p:component('showSubmissions')}" oncomplete="PF('submissionsDG').show()" icon="ui-icon-search" title="View">
+                                            <f:setPropertyActionListener value="#{task}" target="#{taskManagerMB.selectedTask}" />
+                                        </p:commandButton>
+                                    </p:column>-->
 
-                                    <p:dataTable id="tasksDT" var="task" value="#{taskManagerMB.tasks}">
+                                    <p:column headerText="Submissions" style="text-align: center">
+
+                                        <p:commandButton icon="ui-icon-search" oncomplete="PF('taskWizard').next()"
+                                                         update=":main-form:submissionTabPanel">
+                                            <f:setPropertyActionListener value="#{task}"
+                                                                         target="#{taskManagerMB.selectedTask}"/>
+                                        </p:commandButton>
+                                    </p:column>
+
+                                    <!--<p:column headerText="Show Submissions">
+                                        <p:rowToggler />
+                                    </p:column>-->
+                                    <p:column headerText="Edit Task" style="text-align: center">
+
+                                        <p:commandButton onclick="PF('editTaskDG').show();" type="button"
+                                                         icon="ui-icon-pencil">
+                                            <f:setPropertyActionListener value="#{task}"
+                                                                         target="#{taskManagerMB.tempTask}"/>
+                                        </p:commandButton>
+                                    </p:column>
+
+                                    <!--<p:column headerText="Select" style="text-align: center">
+                                        <p:commandButton  ajax="false"
+                                                         action="#{taskManagerMB.selectTask(task)}"
+                                                         icon="ui-icon-search" title="View">
+                                            <-<f:setPropertyActionListener value="#{task}" target="#{taskManagerMB.selectedTask}" />-->
+                                    <!--<f:param name="selectedTask" value="#{task}" />
+                                </p:commandButton>
+                            </p:column>-->
+
+                                    <!--<p:rowExpansion>
+                                        <p:dataTable var="submission" value="#{task.submissions}">
                                         <f:facet name="header">
-                                            Tasks
+                                            Submissions made to #{task.taskName}
                                         </f:facet>
-                                        <p:column headerText="Id">
-                                            <h:outputText value="#{task.taskId}" />
+                                        <p:column headerText="Submitter">
+                                            <h:outputText value="#{submission.submitter.username}" />
                                         </p:column>
-                                        <p:column headerText="Name">
-                                            <h:outputText value="#{task.taskName}" />
+                                        <p:column headerText="Submission Date">
+                                            <h:outputText value="#{submission.submissionDate.toString()}" />
                                         </p:column>
-                                        <p:column headerText="Due">
-                                            <h:outputText value="#{task.dueDate}" />
+                                        <p:column headerText="ID">
+                                            <h:outputText value="#{submission.submissionId}" />
                                         </p:column>
-                                        <p:column headerText="Course">
-                                            <h:outputText value="#{task.course.courseCode}" />
+                                        <p:column headerText="Evaluated?">
+                                            <h:outputText value="#{submission.evaluated}" />
                                         </p:column>
-                                        <!--<p:column headerText="Show Submissions" style="text-align: center">
-                                            <p:commandButton update=":#{p:component('showSubmissions')}" oncomplete="PF('submissionsDG').show()" icon="ui-icon-search" title="View">
-                                                <f:setPropertyActionListener value="#{task}" target="#{taskManagerMB.selectedTask}" />
-                                            </p:commandButton>
-                                        </p:column>-->
-
-                                        <p:column headerText="Submissions" style="text-align: center">
-
-                                            <p:commandButton icon="ui-icon-search" oncomplete="PF('taskWizard').next()" update=":main-form:submissionTabPanel">
-                                                <f:setPropertyActionListener value="#{task}" target="#{taskManagerMB.selectedTask}" />
-                                            </p:commandButton>
+                                        <p:column headerText="Grade">
+                                            <h:outputText value="#{submission.grade}" />
                                         </p:column>
+                                        </p:dataTable>
+                                    </p:rowExpansion>-->
+                                </p:dataTable>
 
-                                        <!--<p:column headerText="Show Submissions">
-                                            <p:rowToggler />
-                                        </p:column>-->
-                                        <p:column headerText="Edit Task" style="text-align: center">
 
-                                            <p:commandButton onclick="PF('editTaskDG').show();" type="button" icon="ui-icon-pencil" >
-                                                <f:setPropertyActionListener value="#{task}" target="#{taskManagerMB.tempTask}" />
-                                            </p:commandButton>
+                            </p:tab>
+
+                            <!--<p:tab id="addTab" title="Add Task" rendered="#{taskManagerMB.isInstructor()}">
+                                <p:panel id="addTabPanel" header="New Task" >
+                                        <h:panelGrid columns="2" cellpadding="5">
+
+                                            <p:outputLabel for="selectedCourse" value="Course: " />
+                                            <p:selectOneMenu id="selectedCourse" converter="#{courseConverter}" value="#{taskManagerMB.tempTask.course}">
+                                                <f:selectItems value="#{taskManagerMB.service.courseList}" var="course"
+                                                               itemLabel="#{course.courseCode}" itemValue="#{course}" />
+                                            </p:selectOneMenu>
+
+                                            <p:outputLabel for="taskName" value="Task Name: " />
+                                            <p:inputText id="taskName" value="#{taskManagerMB.tempTask.taskName}" />
+
+                                            <p:outputLabel for="dueDate" value="Due Date: " />
+                                            <p:calendar id="dueDate" value="#{taskManagerMB.tempTask.dueDate}" pattern="dd-MM-yyyy" mask="true" />
+
+                                            <p:outputLabel for="assistant" value="Assistant: " />
+                                            <p:selectOneMenu id="assistant" converter="#{userConverter}" value="#{taskManagerMB.tempTask.assistant}">
+                                                <f:selectItems value="#{taskManagerMB.service.findAllAssistants()}" var="assistant"
+                                                               itemLabel="#{assistant.fullName}" itemValue="#{assistant}" />
+                                            </p:selectOneMenu>
+
+                                            <p:commandButton value="Submit" action="#{taskManagerMB.addTask()}" update=":main-form:growl"/>
+                                            <p:commandButton value="Cancel" ajax="false" action="#{taskManagerMB.cancelOperation()}"
+                                                             immediate="true" icon="ui-icon-arrowreturnthick-1-w" />
+
+                                            <p:commandButton value="Reset" type="reset" />
+
+                                        </h:panelGrid>
+                                </p:panel>
+                            </p:tab>-->
+
+
+                            <!--<p:tab id="editTab" title="Edit Task" >
+
+                                <p:panel id="editTabPanel" rendered="#{not empty taskManagerMB.selectedTask}">
+                                    <p:outputLabel value="#{taskManagerMB.selectedTask.taskName} is selected" />
+                                    <p:commandButton value="Delete Task" rendered="#{not empty taskManagerMB.selectedTask and taskManagerMB.isInstructor()}" />
+                                </p:panel>
+                            </p:tab>-->
+
+                            <p:tab id="submissionTab" title="Submissions">
+                                <p:panel id="submissionTabPanel" rendered="#{not empty taskManagerMB.selectedTask}">
+                                    <p:dataTable var="submission" value="#{taskManagerMB.selectedTask.submissions}">
+                                        <f:facet name="header">
+                                            Submissions made to <p:outputLabel
+                                                value="#{taskManagerMB.selectedTask.taskName}"/>
+                                        </f:facet>
+                                        <p:column headerText="Submitter">
+                                            <h:outputText value="#{submission.submitter.username}"/>
                                         </p:column>
-
-                                        <!--<p:column headerText="Select" style="text-align: center">
-                                            <p:commandButton  ajax="false"
-                                                             action="#{taskManagerMB.selectTask(task)}"
-                                                             icon="ui-icon-search" title="View">
-                                                <-<f:setPropertyActionListener value="#{task}" target="#{taskManagerMB.selectedTask}" />-->
-                                                <!--<f:param name="selectedTask" value="#{task}" />
-                                            </p:commandButton>
-                                        </p:column>-->
-
-                                        <!--<p:rowExpansion>
-                                            <p:dataTable var="submission" value="#{task.submissions}">
-                                            <f:facet name="header">
-                                                Submissions made to #{task.taskName}
-                                            </f:facet>
-                                            <p:column headerText="Submitter">
-                                                <h:outputText value="#{submission.submitter.username}" />
-                                            </p:column>
-                                            <p:column headerText="Submission Date">
-                                                <h:outputText value="#{submission.submissionDate.toString()}" />
-                                            </p:column>
-                                            <p:column headerText="ID">
-                                                <h:outputText value="#{submission.submissionId}" />
-                                            </p:column>
-                                            <p:column headerText="Evaluated?">
-                                                <h:outputText value="#{submission.evaluated}" />
-                                            </p:column>
-                                            <p:column headerText="Grade">
-                                                <h:outputText value="#{submission.grade}" />
-                                            </p:column>
-                                            </p:dataTable>
-                                        </p:rowExpansion>-->
+                                        <p:column headerText="Submission Date">
+                                            <h:outputText value="#{submission.submissionDate.toString()}"/>
+                                        </p:column>
+                                        <p:column headerText="ID">
+                                            <h:outputText value="#{submission.submissionId}"/>
+                                        </p:column>
+                                        <p:column headerText="Evaluated?">
+                                            <h:outputText value="#{submission.evaluated}"/>
+                                        </p:column>
+                                        <p:column headerText="Grade">
+                                            <h:outputText value="#{submission.grade}"/>
+                                        </p:column>
                                     </p:dataTable>
 
+                                    <p:commandButton value="Back to Tasks" icon="ui-icon-arrowreturn-1-w"
+                                                     onclick="PF('taskWizard').back()"/>
 
-                                </p:tab>
+                                </p:panel>
+                            </p:tab>
 
-                                <!--<p:tab id="addTab" title="Add Task" rendered="#{taskManagerMB.isInstructor()}">
-                                    <p:panel id="addTabPanel" header="New Task" >
-                                            <h:panelGrid columns="2" cellpadding="5">
+                        </p:wizard>
 
-                                                <p:outputLabel for="selectedCourse" value="Course: " />
-                                                <p:selectOneMenu id="selectedCourse" converter="#{courseConverter}" value="#{taskManagerMB.tempTask.course}">
-                                                    <f:selectItems value="#{taskManagerMB.service.courseList}" var="course"
-                                                                   itemLabel="#{course.courseCode}" itemValue="#{course}" />
-                                                </p:selectOneMenu>
+                        <p:dialog header="Edit Task" widgetVar="editTaskDG" focus="taskName">
+                            <h:panelGrid columns="2" cellpadding="5">
 
-                                                <p:outputLabel for="taskName" value="Task Name: " />
-                                                <p:inputText id="taskName" value="#{taskManagerMB.tempTask.taskName}" />
+                                <p:outputLabel for="selectedCourse2" value="Course: "/>
+                                <p:selectOneMenu id="selectedCourse2" converter="#{courseConverter}"
+                                                 value="#{taskManagerMB.tempTask.course}">
+                                    <f:selectItems value="#{taskManagerMB.dataService.realDataService.courseList}" var="course"
+                                                   itemLabel="#{course.courseCode}" itemValue="#{course}"/>
+                                </p:selectOneMenu>
 
-                                                <p:outputLabel for="dueDate" value="Due Date: " />
-                                                <p:calendar id="dueDate" value="#{taskManagerMB.tempTask.dueDate}" pattern="dd-MM-yyyy" mask="true" />
+                                <p:outputLabel for="taskName2" value="Task Name: "/>
+                                <p:inputText id="taskName2" value="#{taskManagerMB.tempTask.taskName}"/>
 
-                                                <p:outputLabel for="assistant" value="Assistant: " />
-                                                <p:selectOneMenu id="assistant" converter="#{userConverter}" value="#{taskManagerMB.tempTask.assistant}">
-                                                    <f:selectItems value="#{taskManagerMB.service.findAllAssistants()}" var="assistant"
-                                                                   itemLabel="#{assistant.fullName}" itemValue="#{assistant}" />
-                                                </p:selectOneMenu>
+                                <p:outputLabel for="dueDate2" value="Due Date: "/>
+                                <p:calendar id="dueDate2" value="#{taskManagerMB.tempTask.dueDate}" pattern="dd-MM-yyyy"
+                                            mask="true"/>
 
-                                                <p:commandButton value="Submit" action="#{taskManagerMB.addTask()}" update=":main-form:growl"/>
-                                                <p:commandButton value="Cancel" ajax="false" action="#{taskManagerMB.cancelOperation()}"
-                                                                 immediate="true" icon="ui-icon-arrowreturnthick-1-w" />
+                                <p:outputLabel for="assistant2" value="Assistant: "/>
+                                <p:selectOneMenu id="assistant2" converter="#{assistantConverter}"
+                                                 value="#{taskManagerMB.tempTask.assistant}">
+                                    <f:selectItems value="#{taskManagerMB.dataService.realDataService.findAllAssistants()}" var="assistant"
+                                                   itemLabel="#{assistant.fullName}" itemValue="#{assistant}"/>
+                                </p:selectOneMenu>
 
-                                                <p:commandButton value="Reset" type="reset" />
+                                <p:commandButton value="Save Changes" oncomplete="PF('editTaskDG').hide()"
+                                                 action="#{taskManagerMB.editTask()}"
+                                                 update=":main-form:growl :main-form:tasksDT"/>
+                                <p:commandButton value="Cancel" oncomplete="PF('editTaskDG').hide()"
+                                                 immediate="true" icon="ui-icon-close"/>
 
-                                            </h:panelGrid>
-                                    </p:panel>
-                                </p:tab>-->
+                                <p:commandButton value="Reset" type="reset"/>
+                            </h:panelGrid>
+                        </p:dialog>
 
+                        <p:dialog header="New Task" widgetVar="addTaskDG" focus="taskName">
+                            <h:panelGrid columns="2" cellpadding="5">
 
+                                <p:outputLabel for="selectedCourse" value="Course: "/>
+                                <p:selectOneMenu id="selectedCourse" converter="#{courseConverter}"
+                                                 value="#{taskManagerMB.tempTask.course}">
+                                    <f:selectItems value="#{taskManagerMB.dataService.realDataService.courseList}" var="course"
+                                                   itemLabel="#{course.courseCode}" itemValue="#{course}"/>
+                                </p:selectOneMenu>
 
-                                <!--<p:tab id="editTab" title="Edit Task" >
+                                <p:outputLabel for="taskName" value="Task Name: "/>
+                                <p:inputText id="taskName" value="#{taskManagerMB.tempTask.taskName}"/>
 
-                                    <p:panel id="editTabPanel" rendered="#{not empty taskManagerMB.selectedTask}">
-                                        <p:outputLabel value="#{taskManagerMB.selectedTask.taskName} is selected" />
-                                        <p:commandButton value="Delete Task" rendered="#{not empty taskManagerMB.selectedTask and taskManagerMB.isInstructor()}" />
-                                    </p:panel>
-                                </p:tab>-->
+                                <p:outputLabel for="dueDate" value="Due Date: "/>
+                                <p:calendar id="dueDate" value="#{taskManagerMB.tempTask.dueDate}" pattern="dd-MM-yyyy"
+                                            mask="true"/>
 
-                                <p:tab id="submissionTab" title="Submissions">
-                                    <p:panel id="submissionTabPanel" rendered="#{not empty taskManagerMB.selectedTask}">
-                                        <p:dataTable var="submission" value="#{taskManagerMB.selectedTask.submissions}">
-                                            <f:facet name="header">
-                                                Submissions made to <p:outputLabel value="#{taskManagerMB.selectedTask.taskName}" />
-                                            </f:facet>
-                                            <p:column headerText="Submitter">
-                                                <h:outputText value="#{submission.submitter.username}" />
-                                            </p:column>
-                                            <p:column headerText="Submission Date">
-                                                <h:outputText value="#{submission.submissionDate.toString()}" />
-                                            </p:column>
-                                            <p:column headerText="ID">
-                                                <h:outputText value="#{submission.submissionId}" />
-                                            </p:column>
-                                            <p:column headerText="Evaluated?">
-                                                <h:outputText value="#{submission.evaluated}" />
-                                            </p:column>
-                                            <p:column headerText="Grade">
-                                                <h:outputText value="#{submission.grade}" />
-                                            </p:column>
-                                        </p:dataTable>
+                                <p:outputLabel for="assistant" value="Assistant: "/>
+                                <p:selectOneMenu id="assistant" converter="#{assistantConverter}"
+                                                 value="#{taskManagerMB.tempTask.assistant}">
+                                    <f:selectItems value="#{taskManagerMB.dataService.realDataService.findAllAssistants()}" var="assistant"
+                                                   itemLabel="#{assistant.fullName}" itemValue="#{assistant}"/>
+                                </p:selectOneMenu>
 
-                                        <p:commandButton value="Back to Tasks" icon="ui-icon-arrowreturn-1-w" onclick="PF('taskWizard').back()" />
+                                <p:commandButton value="Add" oncomplete="PF('addTaskDG').hide()"
+                                                 action="#{taskManagerMB.addTask()}"
+                                                 update=":main-form:growl :main-form:tasksDT"/>
+                                <p:commandButton value="Cancel" oncomplete="PF('addTaskDG').hide()"
+                                                 immediate="true" icon="ui-icon-close"/>
 
-                                    </p:panel>
-                                </p:tab>
+                                <p:commandButton value="Reset" type="reset"/>
 
-                            </p:wizard>
+                            </h:panelGrid>
+                        </p:dialog>
 
-                            <p:dialog header="Edit Task" widgetVar="editTaskDG" focus="taskName">
-                                <h:panelGrid columns="2" cellpadding="5">
-
-                                    <p:outputLabel for="selectedCourse2" value="Course: " />
-                                    <p:selectOneMenu id="selectedCourse2" converter="#{courseConverter}" value="#{taskManagerMB.tempTask.course}">
-                                        <f:selectItems value="#{taskManagerMB.service.courseList}" var="course"
-                                                       itemLabel="#{course.courseCode}" itemValue="#{course}" />
-                                    </p:selectOneMenu>
-
-                                    <p:outputLabel for="taskName2" value="Task Name: " />
-                                    <p:inputText id="taskName2" value="#{taskManagerMB.tempTask.taskName}" />
-
-                                    <p:outputLabel for="dueDate2" value="Due Date: " />
-                                    <p:calendar id="dueDate2" value="#{taskManagerMB.tempTask.dueDate}" pattern="dd-MM-yyyy" mask="true" />
-
-                                    <p:outputLabel for="assistant2" value="Assistant: " />
-                                    <p:selectOneMenu id="assistant2" converter="#{assistantConverter}" value="#{taskManagerMB.tempTask.assistant}">
-                                        <f:selectItems value="#{taskManagerMB.service.findAllAssistants()}" var="assistant"
-                                                       itemLabel="#{assistant.fullName}" itemValue="#{assistant}" />
-                                    </p:selectOneMenu>
-
-                                    <p:commandButton value="Save Changes" oncomplete="PF('editTaskDG').hide()" action="#{taskManagerMB.editTask()}" update=":main-form:growl :main-form:tasksDT"/>
-                                    <p:commandButton value="Cancel" oncomplete="PF('editTaskDG').hide()"
-                                                     immediate="true" icon="ui-icon-close" />
-
-                                    <p:commandButton value="Reset" type="reset" />
-                                </h:panelGrid>
-                            </p:dialog>
-
-                            <p:dialog header="New Task" widgetVar="addTaskDG" focus="taskName">
-                                <h:panelGrid columns="2" cellpadding="5">
-
-                                    <p:outputLabel for="selectedCourse" value="Course: " />
-                                    <p:selectOneMenu id="selectedCourse" converter="#{courseConverter}" value="#{taskManagerMB.tempTask.course}">
-                                        <f:selectItems value="#{taskManagerMB.service.courseList}" var="course"
-                                                       itemLabel="#{course.courseCode}" itemValue="#{course}" />
-                                    </p:selectOneMenu>
-
-                                    <p:outputLabel for="taskName" value="Task Name: " />
-                                    <p:inputText id="taskName" value="#{taskManagerMB.tempTask.taskName}" />
-
-                                    <p:outputLabel for="dueDate" value="Due Date: " />
-                                    <p:calendar id="dueDate" value="#{taskManagerMB.tempTask.dueDate}" pattern="dd-MM-yyyy" mask="true" />
-
-                                    <p:outputLabel for="assistant" value="Assistant: " />
-                                    <p:selectOneMenu id="assistant" converter="#{assistantConverter}" value="#{taskManagerMB.tempTask.assistant}">
-                                        <f:selectItems value="#{taskManagerMB.service.findAllAssistants()}" var="assistant"
-                                                       itemLabel="#{assistant.fullName}" itemValue="#{assistant}" />
-                                    </p:selectOneMenu>
-
-                                    <p:commandButton value="Add" oncomplete="PF('addTaskDG').hide()" action="#{taskManagerMB.addTask()}" update=":main-form:growl :main-form:tasksDT"/>
-                                    <p:commandButton value="Cancel" oncomplete="PF('addTaskDG').hide()"
-                                                     immediate="true" icon="ui-icon-close" />
-
-                                    <p:commandButton value="Reset" type="reset" />
-
-                                </h:panelGrid>
-                            </p:dialog>
-
-                            <p:dialog header="Submissions" widgetVar="submissionsDG" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
-                                <p:dataTable id="showSubmissions" var="submission" value="#{taskManagerMB.selectedTask.submissions}">
-                                    <f:facet name="header">
-                                        Submissions made to #{taskManagerMB.selectedTask.taskName}
-                                    </f:facet>
-                                    <p:column headerText="Submitter">
-                                        <h:outputText value="#{submission.submitter.username}" />
-                                    </p:column>
-                                    <p:column headerText="Submission Date">
-                                        <h:outputText value="#{submission.submissionDate.toString()}" />
-                                    </p:column>
-                                    <p:column headerText="ID">
-                                        <h:outputText value="#{submission.submissionId}" />
-                                    </p:column>
-                                    <p:column headerText="Evaluated?">
-                                        <h:outputText value="#{submission.evaluated}" />
-                                    </p:column>
-                                    <p:column headerText="Grade">
-                                        <h:outputText value="#{submission.grade}" />
-                                    </p:column>
-                                </p:dataTable>
-                            </p:dialog>
+                        <p:dialog header="Submissions" widgetVar="submissionsDG" modal="true" showEffect="fade"
+                                  hideEffect="fade" resizable="false">
+                            <p:dataTable id="showSubmissions" var="submission"
+                                         value="#{taskManagerMB.selectedTask.submissions}">
+                                <f:facet name="header">
+                                    Submissions made to #{taskManagerMB.selectedTask.taskName}
+                                </f:facet>
+                                <p:column headerText="Submitter">
+                                    <h:outputText value="#{submission.submitter.username}"/>
+                                </p:column>
+                                <p:column headerText="Submission Date">
+                                    <h:outputText value="#{submission.submissionDate.toString()}"/>
+                                </p:column>
+                                <p:column headerText="ID">
+                                    <h:outputText value="#{submission.submissionId}"/>
+                                </p:column>
+                                <p:column headerText="Evaluated?">
+                                    <h:outputText value="#{submission.evaluated}"/>
+                                </p:column>
+                                <p:column headerText="Grade">
+                                    <h:outputText value="#{submission.grade}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:dialog>
 
 
-                        </p:panel>
-                    </div>
+                    </p:panel>
                 </div>
+            </div>
         </div>
 
     </h:form>

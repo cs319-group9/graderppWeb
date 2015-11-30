@@ -10,7 +10,7 @@ import javax.faces.context.FacesContext;
 import com.cs319.graderpp.models.User;
 import com.cs319.graderpp.misc.Constants;
 import com.cs319.graderpp.misc.Redirection;
-import com.cs319.graderpp.service.GraderppService;
+import com.cs319.graderpp.service.DataService;
 
 import java.util.List;
 
@@ -22,41 +22,36 @@ import java.util.List;
 @SessionScoped
 public class LoginMB {
 
-    @ManagedProperty("#{graderppService}")
-    private GraderppService graderppService;
+    @ManagedProperty("#{dataService}")
+    private DataService dataService;
 
     private String username;
     private String password;
     private User signedUser;
 
     @PostConstruct
-    public void init(){
-        if( isSignedIn())
-        {
+    public void init() {
+        if (isSignedIn()) {
             Redirection.toHomePage();
         }
 
     }
 
     public void login() {
-        List<User> users = graderppService.getUserList();
+        List<User> users = dataService.getRealDataService().getUserList();
 
-        for( User user: users)
-        {
-           if(user.getUsername().equals(username) &&
-                   user.getPassword().equals(password)) {
-               signedUser = user;
+        for (User user : users) {
+            if (user.getUsername().equals(username) &&
+                    user.getPassword().equals(password)) {
+                signedUser = user;
 
-           }
+            }
         }
 
         FacesContext context = FacesContext.getCurrentInstance();
-        if(signedUser == null)
-        {
+        if (signedUser == null) {
             context.addMessage(null, new FacesMessage("No users found!"));
-        }
-        else
-        {
+        } else {
             context.addMessage(null, new FacesMessage("Welcome " + signedUser.getUsername()));
             Redirection.toHomePage();
         }
@@ -64,17 +59,14 @@ public class LoginMB {
 
     }
 
-    public void logout()
-    {
-        if( isSignedIn() )
-        {
+    public void logout() {
+        if (isSignedIn()) {
             signedUser = null;
             Redirection.toLoginPage();
         }
     }
 
-    public boolean isSignedIn()
-    {
+    public boolean isSignedIn() {
         return (signedUser == null) ? false : true;
     }
 
@@ -102,11 +94,12 @@ public class LoginMB {
         this.signedUser = signedUser;
     }
 
-    public GraderppService getGraderppService() {
-        return graderppService;
+
+    public DataService getDataService() {
+        return dataService;
     }
 
-    public void setGraderppService(GraderppService graderppService) {
-        this.graderppService = graderppService;
+    public void setDataService(DataService dataService) {
+        this.dataService = dataService;
     }
 }

@@ -30,28 +30,23 @@ public class CourseManagerMB extends PageControllerMB {
     private Course tempCourse;
 
     @Override
-    public void loadData()
-    {
-        if ( getLoginMB().getSignedUser() instanceof Instructor)
-        {
-            courses = getService().getCourseList();
+    public void loadData() {
+        if (getLoginMB().getSignedUser() instanceof Instructor) {
+            courses = getDataService().getRealDataService().getCourseList();
         }
 
         tempCourse = new Course();
     }
 
     @Override
-    public void loadComponents()
-    {
+    public void loadComponents() {
         loadMenu(getLoginMB().getSignedUser());
     }
 
 
     @Override
-    public boolean isAuthorized()
-    {
-        if( getLoginMB().getSignedUser() instanceof Instructor)
-        {
+    public boolean isAuthorized() {
+        if (getLoginMB().getSignedUser() instanceof Instructor) {
             return true;
         }
         return false;
@@ -80,26 +75,25 @@ public class CourseManagerMB extends PageControllerMB {
     public void setTempCourse(Course tempCourse) {
         this.tempCourse = tempCourse;
     }
+
     public void addCourse() {
         if (tempCourse != null) {
-            tempCourse.setCourseId( (int)(Math.random() * 1000) );
+            tempCourse.setCourseId((int) (Math.random() * 1000));
 
-            getService().addCourse(tempCourse);
+            getDataService().getRealDataService().addCourse(tempCourse);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage("Course added: " + tempCourse.getCourseName() + " "
                             + tempCourse.getCourseCode() + ", ID:" + tempCourse.getCourseId()));
 
             //UPDATE THE TASK LIST
-            courses = getService().getCourseList();
+            courses = getDataService().getRealDataService().getCourseList();
 
-        }
-        else
-        {
+        } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Task cannot be added!"));
         }
     }
 
-    public void editCourse(){
+    public void editCourse() {
 
     }
 

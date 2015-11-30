@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-                "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
@@ -12,26 +12,25 @@
 <h:body>
 
     <h:form enctype="multipart/form-data">
-        <p:growl id="growl" showDetail="true" sticky="true" />
+        <p:growl id="growl" showDetail="true" sticky="true"/>
 
         <div class="ui-grid ui-grid-responsive">
             <p:tabMenu activeIndex="#{param.i}">
                 <p:menuitem value="Homepage" outcome="/index.xhtml" icon="ui-icon-star">
-                    <f:param name="i" value="0" />
+                    <f:param name="i" value="0"/>
                 </p:menuitem>
                 <p:menuitem value="Submit Code" outcome="/submission.xhtml" icon="ui-icon-search">
-                    <f:param name="i" value="1" />
+                    <f:param name="i" value="1"/>
                 </p:menuitem>
 
             </p:tabMenu>
 
 
-
             <div class="ui-grid-row">
 
-                <div class="ui-grid-col-3" >
+                <div class="ui-grid-col-3">
                     <p:panel id="menu" header="Menu" footer="Home" style="margin-bottom:20px">
-                        <p:menu model="#{submissionMB.menu}" />
+                        <p:menu model="#{submissionMB.menu}"/>
                     </p:panel>
                 </div>
 
@@ -39,24 +38,31 @@
                     <p:panel id="basic" header="Quick Submission" footer="Home" style="margin-bottom:20px">
 
                         <h:panelGrid columns="2" cellpadding="5">
-                            <p:outputLabel for="task" value="Task: " />
+                            <p:outputLabel for="task" value="Task: "/>
 
-                            <p:selectOneMenu id="task" converter="#{taskConverter}" value="#{submissionMB.selectedTask}">
+                            <p:selectOneMenu id="task" converter="#{taskConverter}"
+                                             value="#{submissionMB.selectedTask}"
+                                             valueChangeListener="#{submissionMB.taskChangeListener}"
+                                             immediate="true">
+                                <p:ajax event="change" /><!--listener="#{submissionMB.taskChangeListener}" />-->
+                                <f:selectItem itemDisabled="true" itemValue="#{null}" itemLabel="--Select--" />
                                 <f:selectItems value="#{submissionMB.tasks}" var="task"
-                                               itemLabel="#{task.taskName}" itemValue="#{task}" />
+                                               itemLabel="#{task.taskName}" itemValue="#{task}"/>
                             </p:selectOneMenu>
 
                         </h:panelGrid>
 
-                            <p:fileUpload value="#{submissionMB.file}" mode="simple" skinSimple="true" />
-                            <br />
+                       <!-- <p:fileUpload value="#{submissionMB.file}" mode="simple" skinSimple="true" sizeLimit="100000"
+                                      />-->
 
-                            <p:commandButton value="Submit" actionListener="#{submissionMB.submit()}" update="growl"     ajax="false"/>
+                        <p:fileUpload fileUploadListener="#{submissionMB.handleFileUpload}" mode="advanced"
+                                      dragDropSupport="true"
+                                      update="growl" fileLimit="1"
+                                      fileLimitMessage="Only one file can be uploaded" sizeLimit="100000"
+                                      allowTypes="/(\.|\/)(|zip|tar\.gz)$/" />
 
-                            <p:commandButton value="Download the uploaded file" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="ui-icon-arrowthick-1-s">
-                                <p:fileDownload value="#{submissionMB.file}" />
-                            </p:commandButton>
-
+                        <!--<p:commandButton value="Submit" ajax="false" actionListener="#{submissionMB.submit()}"
+                                        update="growl"/>-->
 
                     </p:panel>
                 </div>

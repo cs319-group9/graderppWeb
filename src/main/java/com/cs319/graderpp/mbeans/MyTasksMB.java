@@ -19,27 +19,22 @@ public class MyTasksMB extends PageControllerMB {
     private List<Task> tasks;
 
     @Override
-    public void loadData()
-    {
+    public void loadData() {
         tasks = ((Student) getLoginMB().getSignedUser()).getAssignedTasks();
     }
 
     @Override
-    public void loadComponents()
-    {
-        loadMenu( getLoginMB().getSignedUser() );
+    public void loadComponents() {
+        loadMenu(getLoginMB().getSignedUser());
     }
 
-    public Submission getSubmission(Task task)
-    {
+    public Submission getSubmission(Task task) {
         return task.getSubmissionFrom((Student) getLoginMB().getSignedUser());
     }
 
     @Override
-    public boolean isAuthorized()
-    {
-        if( getLoginMB().getSignedUser() instanceof Student)
-        {
+    public boolean isAuthorized() {
+        if (getLoginMB().getSignedUser() instanceof Student) {
             return true;
         }
         return false;

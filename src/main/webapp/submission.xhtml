@@ -55,6 +55,11 @@
                        <!-- <p:fileUpload value="#{submissionMB.file}" mode="simple" skinSimple="true" sizeLimit="100000"
                                       />-->
 
+                        <p:outputLabel styleClass="fa-italic">
+                            You can drag and drop your file to the area below.
+                            "zip" and "tar.gz" files are accepted only.
+                        </p:outputLabel>
+
                         <p:fileUpload fileUploadListener="#{submissionMB.handleFileUpload}" mode="advanced"
                                       dragDropSupport="true"
                                       update="growl" fileLimit="1"

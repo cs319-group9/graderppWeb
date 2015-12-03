@@ -1,5 +1,7 @@
 package com.cs319.graderpp.models;
 
+import com.cs319.graderpp.misc.LazyLoading;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +9,7 @@ import java.util.List;
  * Created by burak on 17.11.2015.
  */
 public class Course {
-    private int courseId;
+    private String courseId;
     private String courseCode;
     private String courseName;
     private List<Task> tasks;
@@ -28,11 +30,11 @@ public class Course {
         this.students = new ArrayList<Student>();
     }
 
-    public int getCourseId() {
+    public String getCourseId() {
         return courseId;
     }
 
-    public void setCourseId(int courseId) {
+    public void setCourseId(String courseId) {
         this.courseId = courseId;
     }
 
@@ -53,7 +55,10 @@ public class Course {
     }
 
     public List<Task> getTasks() {
-        return tasks;
+        if(tasks != null)
+            return this.tasks;
+
+        return LazyLoading.getTasksOfCourse(this);
     }
 
     public void setTasks(List<Task> tasks) {

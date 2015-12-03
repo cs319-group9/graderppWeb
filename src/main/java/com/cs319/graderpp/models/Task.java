@@ -1,5 +1,7 @@
 package com.cs319.graderpp.models;
 
+import com.cs319.graderpp.misc.LazyLoading;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -9,7 +11,7 @@ import java.util.List;
  */
 public class Task {
 
-    private int taskId;
+    private String taskId;
     private Course course;
     private String taskName;
     private Date dueDate;
@@ -59,7 +61,10 @@ public class Task {
     }
 
     public List<Submission> getSubmissions() {
-        return submissions;
+        if(submissions != null)
+            return this.submissions;
+
+        return LazyLoading.getSubmissionsOfTask(this);
     }
 
     public Submission getSubmissionFrom(Student student) {
@@ -90,11 +95,11 @@ public class Task {
         this.taskName = taskName;
     }
 
-    public int getTaskId() {
+    public String getTaskId() {
         return taskId;
     }
 
-    public void setTaskId(int taskId) {
+    public void setTaskId(String taskId) {
         this.taskId = taskId;
     }
 

@@ -50,7 +50,7 @@ public class SubmissionMB extends PageControllerMB {
         this.file = event.getFile();
 
         // if task id is not set dont send
-        if (selectedTask == null) {
+       /* if (selectedTask == null) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Submission not made, please select a Task!"));
         } else {
             int randId = (int) (Math.random() * 1000);
@@ -84,7 +84,7 @@ public class SubmissionMB extends PageControllerMB {
 
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage("Submission Made to the Task: " + selectedTask.getTaskId()));
-        }
+        }*/
     }
 
     public Task getSelectedTask() {

@@ -38,7 +38,7 @@ public class LoginMB {
     }
 
     public void login() {
-        List<User> users = dataService.getRealDataService().getUserList();
+        /*List<User> users = dataService.getRealDataService().getUserList();
 
         for (User user : users) {
             if (user.getUsername().equals(username) &&
@@ -46,7 +46,9 @@ public class LoginMB {
                 signedUser = user;
 
             }
-        }
+        }*/
+
+        signedUser = dataService.getRealDataService().getSignedUser(username, password);
 
         FacesContext context = FacesContext.getCurrentInstance();
         if (signedUser == null) {

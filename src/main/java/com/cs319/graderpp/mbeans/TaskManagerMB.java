@@ -86,14 +86,14 @@ public class TaskManagerMB extends PageControllerMB {
 
     public void addTask() {
         if (tempTask != null) {
-            tempTask.setTaskId((int) (Math.random() * 1000));
+            //tempTask.setTaskId((int) (Math.random() * 1000));
 
-            getDataService().getRealDataService().addTask(tempTask);
+            //getDataService().getRealDataService().addTask(tempTask);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage("Task added: " + tempTask.getTaskName() + ", ID:" + tempTask.getTaskId()));
 
             //UPDATE THE TASK LIST
-            tasks = getDataService().getRealDataService().getTaskList();
+            //tasks = getDataService().getRealDataService().getTaskList();
 
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Task cannot be added!"));

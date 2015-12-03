@@ -6,7 +6,7 @@ package com.cs319.graderpp.models;
 public class User {
     private String username;
     private String password;
-    private int userId;
+    private String userId;
     private String fullName;
 
     public User(String username, String password, String fullName) {
@@ -15,8 +15,12 @@ public class User {
         this.fullName = fullName;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getFullName() {
@@ -27,9 +31,6 @@ public class User {
         this.fullName = fullName;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
 
     public String getUsername() {
         return username;

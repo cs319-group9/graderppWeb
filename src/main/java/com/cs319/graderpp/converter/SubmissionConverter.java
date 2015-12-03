@@ -22,7 +22,7 @@ public class SubmissionConverter implements Converter {
     private DataService service;
 
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
-        Submission tmp = service.getRealDataService().findSubmissionById(Integer.parseInt(value));
+        Submission tmp = service.getRealDataService().findSubmissionById(value);
         return tmp;
     }
 

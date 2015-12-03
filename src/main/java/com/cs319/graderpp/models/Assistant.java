@@ -1,6 +1,7 @@
 package com.cs319.graderpp.models;
 
 import com.cs319.graderpp.misc.Constants;
+import com.cs319.graderpp.misc.LazyLoading;
 
 import java.util.List;
 
@@ -16,7 +17,10 @@ public class Assistant extends User {
     }
 
     public List<Task> getTasks() {
-        return tasks;
+        if(tasks != null)
+            return this.tasks;
+
+        return LazyLoading.getTasksOfAssistant(this);
     }
 
     public void setTasks(List<Task> tasks) {

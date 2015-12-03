@@ -9,7 +9,7 @@ import java.util.List;
  * Created by burak on 07.11.2015.
  */
 public class Submission {
-    private int submissionId;
+    private String submissionId;
     private Student submitter;
     private DateTime submissionDate;
     private String file;
@@ -42,12 +42,12 @@ public class Submission {
         return tmp;
     }
 
-    public int getSubmissionId() {
-        return submissionId;
+    public void setSubmissionId(String submissionId) {
+        this.submissionId = submissionId;
     }
 
-    public void setSubmissionId(int submissionId) {
-        this.submissionId = submissionId;
+    public String getSubmissionId() {
+        return submissionId;
     }
 
     public DateTime getSubmissionDate() {

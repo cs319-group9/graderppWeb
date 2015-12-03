@@ -23,7 +23,7 @@ public class UserConverter implements Converter {
     private DataService service;
 
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
-        User tmp = service.getRealDataService().findUserById(Integer.parseInt(value));
+        User tmp = service.getRealDataService().findUserById(value);
         return tmp;
     }
 

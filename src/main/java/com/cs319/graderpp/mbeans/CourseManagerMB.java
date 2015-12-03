@@ -32,7 +32,7 @@ public class CourseManagerMB extends PageControllerMB {
     @Override
     public void loadData() {
         if (getLoginMB().getSignedUser() instanceof Instructor) {
-            courses = getDataService().getRealDataService().getCourseList();
+            //courses = getDataService().getRealDataService().getCourseList();
         }
 
         tempCourse = new Course();
@@ -78,7 +78,7 @@ public class CourseManagerMB extends PageControllerMB {
 
     public void addCourse() {
         if (tempCourse != null) {
-            tempCourse.setCourseId((int) (Math.random() * 1000));
+            //tempCourse.setCourseId((int) (Math.random() * 1000));
 
             getDataService().getRealDataService().addCourse(tempCourse);
             FacesContext.getCurrentInstance().addMessage(null,
@@ -86,7 +86,7 @@ public class CourseManagerMB extends PageControllerMB {
                             + tempCourse.getCourseCode() + ", ID:" + tempCourse.getCourseId()));
 
             //UPDATE THE TASK LIST
-            courses = getDataService().getRealDataService().getCourseList();
+            //courses = getDataService().getRealDataService().getCourseList();
 
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Task cannot be added!"));

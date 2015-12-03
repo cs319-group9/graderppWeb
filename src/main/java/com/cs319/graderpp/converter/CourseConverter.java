@@ -22,7 +22,7 @@ public class CourseConverter implements Converter {
     private DataService service;
 
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
-        Course tmp = service.getRealDataService().findCourseById(Integer.parseInt(value));
+        Course tmp = service.getRealDataService().findCourseById(value);
         return tmp;
     }
 

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class DummyDataImpl implements DataServiceImpl {
+public class DummyDataImpl {/*implements DataServiceImpl {
 
     private List<User> userList;
     private List<Task> taskList;
@@ -62,7 +62,7 @@ public class DummyDataImpl implements DataServiceImpl {
 
     private List<User> prepareUserList() {
         List<User> users = new ArrayList<User>();
-        Student u1 = new Student("st", "123", 123, "Burak Ali");
+        Student u1 = new Student("st", "123", "123", "Burak Ali");
         u1.setUserId((int) (Math.random() * 1000));
         u1.setCourses(courseList);
 
@@ -211,5 +211,5 @@ public class DummyDataImpl implements DataServiceImpl {
 
     public void setSubmissionList(List<Submission> submissionList) {
         this.submissionList = submissionList;
-    }
+    }*/
 }

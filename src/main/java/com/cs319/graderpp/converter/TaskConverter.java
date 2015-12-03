@@ -23,7 +23,7 @@ public class TaskConverter implements Converter {
     private DataService service;
 
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
-        Task tmp = service.getRealDataService().findTaskById(Integer.parseInt(value));
+        Task tmp = service.getRealDataService().findTaskById(value);
         return tmp;
     }
 

@@ -16,8 +16,8 @@ public class DataService {
 
     public DataService()
     {
-        this.realDataService = new DummyDataImpl();
-        //this.realDataService = new DatabaseDataImpl();
+        //this.realDataService = new DummyDataImpl();
+        this.realDataService = new DatabaseDataImpl();
     }
 
     @PostConstruct

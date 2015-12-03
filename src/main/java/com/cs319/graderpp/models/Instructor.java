@@ -1,6 +1,7 @@
 package com.cs319.graderpp.models;
 
 import com.cs319.graderpp.misc.Constants;
+import com.cs319.graderpp.misc.LazyLoading;
 
 import java.util.List;
 
@@ -16,7 +17,10 @@ public class Instructor extends User {
     }
 
     public List<Course> getCourses() {
-        return courses;
+        if(courses != null)
+            return this.courses;
+
+        return LazyLoading.getCoursesOfUser(this);
     }
 
     public void setCourses(List<Course> courses) {

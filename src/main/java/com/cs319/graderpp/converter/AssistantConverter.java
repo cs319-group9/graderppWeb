@@ -24,7 +24,7 @@ public class AssistantConverter implements Converter {
     private DataService service;
 
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
-        Assistant tmp = (Assistant) service.getRealDataService().findUserById(Integer.parseInt(value));
+        Assistant tmp = (Assistant) service.getRealDataService().findUserById(value);
         return tmp;
     }
 

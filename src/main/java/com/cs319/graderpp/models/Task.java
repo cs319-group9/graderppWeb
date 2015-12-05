@@ -12,26 +12,25 @@ import java.util.List;
 public class Task {
 
     private String taskId;
-    private Course course;
     private String taskName;
     private Date dueDate;
+
+    private Course course;
+    private Assistant assistant;
+
     private List<Submission> submissions;
     private List<MakeFile> makeFiles;
     private List<TestCaseFile> testCaseFiles;
-    private Assistant assistant;
 
-    public Task() {
-        this.submissions = new ArrayList<Submission>();
-        this.testCaseFiles = new ArrayList<TestCaseFile>();
-        this.makeFiles = new ArrayList<MakeFile>();
-    }
+    public Task() {}
 
-    public Task(Course course, String taskName, Date dueDate) {
-        this.submissions = new ArrayList<Submission>();
-        this.testCaseFiles = new ArrayList<TestCaseFile>();
-        this.makeFiles = new ArrayList<MakeFile>();
+    public Task(String taskName, Date dueDate) {
+        this.submissions = null;
+        this.testCaseFiles = null;
+        this.makeFiles = null;
+        this.assistant = null;
+        this.course = null;
 
-        this.course = course;
         this.taskName = taskName;
         this.dueDate = dueDate;
     }
@@ -61,10 +60,7 @@ public class Task {
     }
 
     public List<Submission> getSubmissions() {
-        if(submissions != null)
             return this.submissions;
-
-        return LazyLoading.getSubmissionsOfTask(this);
     }
 
     public Submission getSubmissionFrom(Student student) {

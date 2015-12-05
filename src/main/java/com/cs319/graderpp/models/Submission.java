@@ -12,34 +12,37 @@ public class Submission {
     private String submissionId;
     private Student submitter;
     private DateTime submissionDate;
-    private String file;
     private Task task;
-    private int grade;
+    private CodeFile codeFile;
     private boolean evaluated;
-    private List<CodeFile> codeFiles;
+    private int grade;
+    private String evaluationResultNote;
 
-    public Submission(Student submitter, DateTime submissionDate, Task task) {
+    public Submission(Student submitter, DateTime submissionDate) {
         this.submissionDate = submissionDate;
         this.submitter = submitter;
-        this.task = task;
         this.evaluated = false;
-        this.codeFiles = new ArrayList<CodeFile>();
-    }
 
-    public List<CodeFile> getCodeFiles() {
-        return codeFiles;
-    }
-
-    public void setCodeFiles(List<CodeFile> codeFiles) {
-        this.codeFiles = codeFiles;
+        this.task = null;
+        this.codeFile = null;
     }
 
     public String filesToString() {
-        String tmp = "";
-        for (CodeFile file : codeFiles) {
-            tmp += "name: " + file.getFileName() + ", path: " + file.getFullPath() + ", size: " + file.getSize() + ";\n";
+        if( codeFile != null) {
+            String tmp = "name: " + codeFile.getFileName() + ", path: " + codeFile.getFullPath() + ", size: "
+                    + codeFile.getSize() + ";\n";
+            return tmp;
         }
-        return tmp;
+
+        return null;
+    }
+
+    public CodeFile getCodeFile() {
+        return codeFile;
+    }
+
+    public void setCodeFile(CodeFile codeFile) {
+        this.codeFile = codeFile;
     }
 
     public void setSubmissionId(String submissionId) {
@@ -56,14 +59,6 @@ public class Submission {
 
     public void setSubmissionDate(DateTime submissionDate) {
         this.submissionDate = submissionDate;
-    }
-
-    public String getFile() {
-        return file;
-    }
-
-    public void setFile(String file) {
-        this.file = file;
     }
 
     public Task getTask() {
@@ -96,5 +91,13 @@ public class Submission {
 
     public void setEvaluated(boolean evaluated) {
         this.evaluated = evaluated;
+    }
+
+    public String getEvaluationResultNote() {
+        return evaluationResultNote;
+    }
+
+    public void setEvaluationResultNote(String evaluationResultNote) {
+        this.evaluationResultNote = evaluationResultNote;
     }
 }

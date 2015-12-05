@@ -21,6 +21,7 @@ public interface DataServiceImpl {
     List<Course> findCoursesOfUser(User user);
     List<Task> findTasksOfCourse(String courseId);
     List<Submission> findSubmissionsOfTask(String taskId);
+    Task findTaskOfSubmission(String submissionId);
 
 
     void addTask(Task task);

@@ -14,13 +14,11 @@ public class Assistant extends User {
 
     public Assistant(String username, String password, String fullName) {
         super(username, password, fullName);
+        tasks = null;
     }
 
     public List<Task> getTasks() {
-        if(tasks != null)
             return this.tasks;
-
-        return LazyLoading.getTasksOfAssistant(this);
     }
 
     public void setTasks(List<Task> tasks) {

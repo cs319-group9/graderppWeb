@@ -9,8 +9,11 @@ import com.cs319.graderpp.misc.Redirection;
 import com.cs319.graderpp.service.DataService;
 import com.cs319.graderpp.service.DataServiceImpl;
 import org.primefaces.model.menu.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
@@ -24,7 +27,7 @@ import javax.faces.bean.ViewScoped;
 public abstract class PageControllerMB {
 
     @ManagedProperty("#{dataService}")
-    private DataService dataService;
+    DataService dataService;
 
     @ManagedProperty("#{loginMB}")
     private LoginMB loginMB;
@@ -44,14 +47,8 @@ public abstract class PageControllerMB {
     }
 
     public abstract void loadData();
-
-    public void loadComponents() {
-    }
-
-    public boolean isAuthorized() {
-        return true;
-    }
-
+    public abstract void loadComponents();
+    public abstract boolean isAuthorized();
 
     public MenuModel getMenu() {
         return menu;

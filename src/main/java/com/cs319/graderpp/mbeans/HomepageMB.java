@@ -1,5 +1,7 @@
 package com.cs319.graderpp.mbeans;
 
+import com.cs319.graderpp.models.Student;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
@@ -17,6 +19,14 @@ public class HomepageMB extends PageControllerMB {
     public void loadComponents() {
         loadMenu(getLoginMB().getSignedUser());
 
+    }
+
+    @Override
+    public boolean isAuthorized()
+    {
+        if( getLoginMB().getSignedUser() != null)
+            return true;
+        return false;
     }
 
     @Override

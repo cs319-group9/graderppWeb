@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
@@ -23,22 +24,22 @@ import java.util.List;
  * Created by burak on 17.11.2015.
  */
 
-@ViewScoped
 @ManagedBean
+@ViewScoped
 public class TaskManagerMB extends PageControllerMB {
 
     private List<Task> tasks;
     private Task selectedTask;
     private Task tempTask;
 
-    @Autowired
-    LazyLoading lazyLoading;
+    @ManagedProperty("#{lazyLoading}")
+    private LazyLoading lazyLoading;
 
     @Override
     public void loadData() {
         if (getLoginMB().getSignedUser() instanceof Instructor) {
             tasks = new ArrayList<Task>();
-            for (Course course : ((Instructor) getLoginMB().getSignedUser()).getCourses()) {
+            for (Course course : lazyLoading.getCoursesOfUser(getLoginMB().getSignedUser())) {
                 //for (Task task : course.getTasks()) {
                 for (Task task : lazyLoading.getTasksOfCourse(course)) {
                     tasks.add(task);
@@ -145,4 +146,12 @@ public class TaskManagerMB extends PageControllerMB {
             return event.getNewStep();
         }
     }*/
+
+    public LazyLoading getLazyLoading() {
+        return lazyLoading;
+    }
+
+    public void setLazyLoading(LazyLoading lazyLoading) {
+        this.lazyLoading = lazyLoading;
+    }
 }

@@ -20,7 +20,6 @@ import static java.util.Arrays.asList;
  * Created by yusuf on 25-Nov-15.
  */
 
-@Service(value = "graderppService")
 public class DatabaseDataImpl implements DataServiceImpl {
 
     private MongoCollection<Document> _user_list, _course_list, _task_list, _submission_list;
@@ -33,7 +32,25 @@ public class DatabaseDataImpl implements DataServiceImpl {
     public enum MongoUserType {student, ta, instructor};
     public enum MongoModelType{course, task, submission};
 
+    public DatabaseDataImpl(){
+        MongoClient mongoClient = new MongoClient("localhost");
+        MongoDatabase db = mongoClient.getDatabase("db0");
+        _user_list = db.getCollection(_collection_keys[0]);
+        _course_list = db.getCollection(_collection_keys[1]);
+        _task_list = db.getCollection(_collection_keys[2]);
+        _submission_list = db.getCollection(_collection_keys[3]);
 
+        //generateDemoDB(true, 3, 3, 3, 3, 3, 3);
+
+        //System.out.println("collections created or connected successfuly");
+        /*
+
+        deleteDemoTasks();
+
+        clearCollections();
+        generateDemoUsers();
+        */
+    }
 
     private void clearCollections(){
         Document d = new Document();
@@ -43,76 +60,94 @@ public class DatabaseDataImpl implements DataServiceImpl {
         _task_list.deleteMany(d);
     }
 
-    private void generateDemoUsers() {
 
-        String id;
-
-        id = addUser("stu", "123", "student demo", MongoUserType.student);
-        System.out.println("user instantiated with id: " + id);
-
-        id = addUser("ta", "123", "ta demo", MongoUserType.ta);
-        System.out.println("user instantiated with id: " + id);
-
-        id = addUser("inst", "123", "instructor demo", MongoUserType.instructor);
-        System.out.println("user instantiated with id: " + id);
-
-    }
-
-    private void generateDemoCourses(String inst_id){
-        addCourse(inst_id, "demo1", "demo 101");
-        addCourse(inst_id, "demo2", "demo 102");
-        addCourse(inst_id, "demo3", "demo 103");
-    }
-
-    private void deleteDemoCourses(String user_id){
-        deleteCourse(user_id, "demo1", "demo 101");
-        deleteCourse(user_id, "demo2", "demo 102");
-        deleteCourse(user_id, "demo3", "demo 103");
-    }
-
-    private void generateDemoTasks(){
-
-        Document ta_doc = new Document(_user_keys[1], "ta");
-
-        FindIterable<Document> iterable = _user_list.find(ta_doc);
-        String ta_id = iterable.first().getObjectId("_id").toHexString();
-        String course_id = _course_list.find(new Document()).first().getObjectId("_id").toHexString();
-
-        addTask("task1", course_id, ta_id, "30.12.2015");
-        addTask("task2", course_id, ta_id, "30.12.2015");
-        addTask("task3", course_id, ta_id, "30.12.2015");
-    }
-
-    private void deleteDemoTasks(){
-        String task_id = _task_list.find(new Document()).first().getObjectId("_id").toHexString();
-
-        deleteTask(task_id);
-    }
-
-    private void generateDemoSubmissions(String student_id){
-        String task_id = _task_list.find(new Document()).first().getObjectId("_id").toHexString();
-
-        addSubmission(task_id, student_id);
-        addSubmission(task_id, student_id);
-        addSubmission(task_id, student_id);
-    }
-
-    private void deleteDemoSubmissions(String student_id){
-
-        FindIterable<Document> iterable = _submission_list.find(new Document());
-
-        for (Document doc : iterable){
-            deleteSubmission(doc.getObjectId("_id").toHexString(), student_id);
+    private boolean generateDemoDB(boolean delete_old_db, int inst_count,
+                                   int ta_count,int student_count, int course_count,
+                                   int task_count, int submission_count)
+    {
+        if (delete_old_db){
+            clearCollections();
         }
+        ArrayList<String> inst_ids = new ArrayList<String>();
+        for (int i = 0; i < inst_count; i++){
+            String name = "inst" + i;
+            String id = addUser(name, "123", name, MongoUserType.instructor);
+            if (id == null){
+                return false;
+            }
+            inst_ids.add(id);
+        }
+
+        ArrayList<String> course_ids = new ArrayList<String>();
+        for (int i = 0; i < course_count; i++){
+            String name = "course" + i;
+            String code = "10" + i;
+            String inst_id = inst_ids.get(i % inst_count);
+            String id = addCourse(inst_id, name, code);
+            if (id == null){
+                return false;
+            }
+            course_ids.add(id);
+        }
+
+        ArrayList<String> ta_ids = new ArrayList<String>();
+        for (int i = 0; i < ta_count; i++){
+            String name = "ta" + i;
+            String id = addUser(name, "123", name, MongoUserType.ta);
+            if (id == null){
+                return false;
+            }
+            ta_ids.add(id);
+            String course_id = course_ids.get(i % course_count);
+            subscribe2Course(id, course_id);
+        }
+
+        ArrayList<String> student_ids = new ArrayList<String>();
+        for (int i = 0; i < student_count; i++){
+            String name = "st" + i;
+            String id = addUser(name, "123", name, MongoUserType.student);
+            if (id == null){
+                return false;
+            }
+            student_ids.add(id);
+            String course_id = course_ids.get(i % course_count);
+            subscribe2Course(id, course_id);
+        }
+
+        ArrayList<String> task_ids = new ArrayList<String>();
+        for (int i = 0; i < task_count; i++){
+            String name = "task" + i;
+            String course_id = course_ids.get(i % course_count);
+            String ta_id = ta_ids.get(i % ta_count);
+            String due_date = "0" + i;
+            String id = addTask(name, course_id, ta_id, due_date);
+            if (id == null){
+                return false;
+            }
+            task_ids.add(id);
+        }
+
+        ArrayList<String> submission_ids = new ArrayList<String>();
+        for (int i = 0; i < submission_count; i++){
+            String student_id = student_ids.get(i % student_count);
+            List l = getTasks4User(student_id);
+            if (l == null){
+                return false;
+            }
+            String task_id = l.get(0).toString();
+            String id = addSubmission(task_id, student_id);
+            if (id == null){
+                return false;
+            }
+            task_ids.add(id);
+        }
+
+        return true;
+
     }
 
-    private void subscribe2CourseDemo(){
-        Document student_doc = new Document(_user_keys[1], "stu");
-        Document student = _user_list.find(student_doc).first();
-
-        Document course = _course_list.find(new Document()).first();
-
-        subscribe2Course(student.getObjectId("_id").toHexString(), course.getObjectId("_id").toHexString());
+    private boolean generateDemoDB(boolean delete_old_db){
+        return generateDemoDB(delete_old_db, 3, 6, 13, 5, 10, 41);
     }
 
     private String addUser(String name, String pass, String full_name, MongoUserType user_type){
@@ -139,7 +174,7 @@ public class DatabaseDataImpl implements DataServiceImpl {
         return true;
     }
 
-    private String addCourse(String inst_id, String name, String code){
+    private String addCourse(String inst_id, String name, String code) {
         Document new_course = new Document();
 
         new_course.append(_course_keys[1], name);
@@ -227,7 +262,7 @@ public class DatabaseDataImpl implements DataServiceImpl {
         return unsubscribeAllFromModel(task_id, MongoModelType.task, task_id, MongoModelType.task, scope_doc);
     }
 
-    private boolean addSubmission(String task_id, String student_id){
+    private String addSubmission(String task_id, String student_id){
 
         Document new_submission = new Document();
         new_submission.append(_submission_keys[1], task_id);
@@ -235,7 +270,7 @@ public class DatabaseDataImpl implements DataServiceImpl {
 
         FindIterable<Document> iterable = _submission_list.find(new_submission);
         if (iterable.first() != null){  // already have this submission
-            return false;
+            return "Already have this submission";
         }
         //insert
         _submission_list.insertOne(new_submission);
@@ -246,7 +281,9 @@ public class DatabaseDataImpl implements DataServiceImpl {
 
         Document scope_doc = getDocFromScope(6);
         //if a instructor or a ta have that task, then he should have that submission
-        return subscribeAll2Model(submission_id, MongoModelType.submission, task_id, MongoModelType.task, scope_doc);
+        subscribeAll2Model(submission_id, MongoModelType.submission, task_id, MongoModelType.task, scope_doc);
+
+        return  submission_id;
     }
 
     private boolean deleteSubmission(String submission_id, String student_id){
@@ -381,7 +418,7 @@ public class DatabaseDataImpl implements DataServiceImpl {
         return true;
     }
 
-    private boolean subscribe2Course(String user_id, String course_id){
+    private boolean subscribe2Course(String user_id, String course_id) {
         return subscribe2List(user_id, course_id, 5);
     }
 
@@ -557,28 +594,7 @@ public class DatabaseDataImpl implements DataServiceImpl {
         return user;
     }
 
-    public DatabaseDataImpl(){
-        MongoClient mongoClient = new MongoClient("localhost");
-        MongoDatabase db = mongoClient.getDatabase("db0");
-        _user_list = db.getCollection(_collection_keys[0]);
-        _course_list = db.getCollection(_collection_keys[1]);
-        _task_list = db.getCollection(_collection_keys[2]);
-        _submission_list = db.getCollection(_collection_keys[3]);
 
-        //generateDemoUsers();
-        //generateDemoCourses("565f83da8de32a34b452c21c");
-        //generateDemoTasks();
-        generateDemoSubmissions("565f83da8de32a34b452c21a");
-        subscribe2CourseDemo();
-        //System.out.println("collections created or connected successfuly");
-        /*
-
-        deleteDemoTasks();
-
-        clearCollections();
-        generateDemoUsers();
-        */
-    }
 
 
     public void addSubmission(Submission submission) {
@@ -599,17 +615,32 @@ public class DatabaseDataImpl implements DataServiceImpl {
         String due_date = task.getString(_task_keys[4]);
 
         //_task_keys = {"_id", "name", "course_id", "ta_id", "due_date"};
-        Task t = new Task();
+        Task t = new Task(task_name, null);
+
         t.setTaskName(task_name);
         t.setCourse(findCourseById(course_id));
         t.setAssistant((Assistant) findUserById(ta_id));
+        t.setTaskId(taskId);
 
-        t.setDueDate(null);
         t.setSubmissions(null);
         t.setMakeFiles(null);
         t.setTestCaseFiles(null);
 
         return t;
+    }
+
+    public Task findTaskOfSubmission(String submissionId)
+    {
+
+        Document submission_doc = new Document();
+        submission_doc.append(_submission_keys[0], new ObjectId(submissionId));
+
+        FindIterable<Document> iterable = _submission_list.find(submission_doc);
+        Document d = iterable.first();
+
+        String task_id = d.getObjectId(_submission_keys[1]).toHexString();
+        return findTaskById(task_id);
+
     }
 
     public Course findCourseById(String courseId) {
@@ -623,10 +654,9 @@ public class DatabaseDataImpl implements DataServiceImpl {
         String course_code = course.getString(_course_keys[2]);
         String inst_id = course.getString(_course_keys[3]);
 
-        Course c = new Course();
-        c.setCourseCode(course_code);
-        c.setCourseName(course_name);
+        Course c = new Course(course_code, course_name);
 
+        c.setCourseId(courseId);
         c.setInstructors(null);
         c.setStudents(null);
         c.setTasks(null);
@@ -677,12 +707,15 @@ public class DatabaseDataImpl implements DataServiceImpl {
         {
             case instructor:
                 u = new Instructor(name, pass, full_name);
+                u.setUserId(userId);
                 break;
             case student:
                 u = new Student(name, pass, full_name);
+                u.setUserId(userId);
                 break;
             case ta:
                 u = new Assistant(name, pass, full_name);
+                u.setUserId(userId);
                 break;
             default:
                 u = null;
@@ -700,16 +733,18 @@ public class DatabaseDataImpl implements DataServiceImpl {
 
         String task_id = submission.getString(_submission_keys[1]);
         String student_id = submission.getString(_submission_keys[2]);
-        Task t = findTaskById(task_id);
 
         Student submitter = findStudentById(student_id);
 
-        Submission s = new Submission(submitter, null, t);
-        s.setTask(findTaskById(task_id));
 
-        s.setCodeFiles(null);
+        Submission s = new Submission(submitter, null);
+        Task t = findTaskById(task_id);
+        s.setTask(t);
+
+        s.setSubmissionId(submissionId);
+
         s.setEvaluated(false);
-        s.setFile(null);
+        s.setCodeFile(null);
         s.setGrade(-1);
         s.setSubmissionDate(null);
 
@@ -726,6 +761,7 @@ public class DatabaseDataImpl implements DataServiceImpl {
             String id = d.getObjectId("_id").toHexString();
             User u = findUserById(id);
             Assistant a = new Assistant(u.getUsername(), u.getPassword(), u.getFullName());
+            a.setUserId(id);
             a.setTasks(null);
             l.add(a);
         }
@@ -841,5 +877,77 @@ public class DatabaseDataImpl implements DataServiceImpl {
             }
         });
         System.out.println( iterable.first().toString());
+    }*/
+
+    /*private void generateDemoUsers() {
+
+        String id;
+
+        id = addUser("stu", "123", "student demo", MongoUserType.student);
+        System.out.println("user instantiated with id: " + id);
+
+        id = addUser("ta", "123", "ta demo", MongoUserType.ta);
+        System.out.println("user instantiated with id: " + id);
+
+        id = addUser("inst", "123", "instructor demo", MongoUserType.instructor);
+        System.out.println("user instantiated with id: " + id);
+
+    }
+
+    private void generateDemoCourses(String inst_id){
+        addCourse(inst_id, "demo1", "demo 101");
+        addCourse(inst_id, "demo2", "demo 102");
+        addCourse(inst_id, "demo3", "demo 103");
+    }
+
+    private void deleteDemoCourses(String user_id){
+        deleteCourse(user_id, "demo1", "demo 101");
+        deleteCourse(user_id, "demo2", "demo 102");
+        deleteCourse(user_id, "demo3", "demo 103");
+    }
+
+    private void generateDemoTasks(){
+
+        Document ta_doc = new Document(_user_keys[1], "ta");
+
+        FindIterable<Document> iterable = _user_list.find(ta_doc);
+        String ta_id = iterable.first().getObjectId("_id").toHexString();
+        String course_id = _course_list.find(new Document()).first().getObjectId("_id").toHexString();
+
+        addTask("task1", course_id, ta_id, "30.12.2015");
+        addTask("task2", course_id, ta_id, "30.12.2015");
+        addTask("task3", course_id, ta_id, "30.12.2015");
+    }
+
+    private void deleteDemoTasks(){
+        String task_id = _task_list.find(new Document()).first().getObjectId("_id").toHexString();
+
+        deleteTask(task_id);
+    }
+
+    private void generateDemoSubmissions(String student_id){
+        String task_id = _task_list.find(new Document()).first().getObjectId("_id").toHexString();
+
+        addSubmission(task_id, student_id);
+        addSubmission(task_id, student_id);
+        addSubmission(task_id, student_id);
+    }
+
+    private void deleteDemoSubmissions(String student_id){
+
+        FindIterable<Document> iterable = _submission_list.find(new Document());
+
+        for (Document doc : iterable){
+            deleteSubmission(doc.getObjectId("_id").toHexString(), student_id);
+        }
+    }
+
+    private void subscribe2CourseDemo(){
+        Document student_doc = new Document(_user_keys[1], "stu");
+        Document student = _user_list.find(student_doc).first();
+
+        Document course = _course_list.find(new Document()).first();
+
+        subscribe2Course(student.getObjectId("_id").toHexString(), course.getObjectId("_id").toHexString());
     }*/
 }

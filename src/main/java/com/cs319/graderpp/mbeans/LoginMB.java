@@ -11,6 +11,8 @@ import com.cs319.graderpp.models.User;
 import com.cs319.graderpp.misc.Constants;
 import com.cs319.graderpp.misc.Redirection;
 import com.cs319.graderpp.service.DataService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -18,12 +20,12 @@ import java.util.List;
  * Created by burak on 07.11.2015.
  */
 
-@ManagedBean
+@ManagedBean(name = "loginMB")
 @SessionScoped
 public class LoginMB {
 
     @ManagedProperty("#{dataService}")
-    private DataService dataService;
+    DataService dataService;
 
     private String username;
     private String password;
@@ -34,7 +36,6 @@ public class LoginMB {
         if (isSignedIn()) {
             Redirection.toHomePage();
         }
-
     }
 
     public void login() {
@@ -69,7 +70,7 @@ public class LoginMB {
     }
 
     public boolean isSignedIn() {
-        return (signedUser == null) ? false : true;
+        return (signedUser != null);
     }
 
     public String getUsername() {
@@ -104,4 +105,6 @@ public class LoginMB {
     public void setDataService(DataService dataService) {
         this.dataService = dataService;
     }
+
+
 }

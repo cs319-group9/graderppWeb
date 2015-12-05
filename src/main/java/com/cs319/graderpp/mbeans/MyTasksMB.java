@@ -1,10 +1,14 @@
 package com.cs319.graderpp.mbeans;
 
+import com.cs319.graderpp.misc.LazyLoading;
 import com.cs319.graderpp.models.Student;
 import com.cs319.graderpp.models.Submission;
 import com.cs319.graderpp.models.Task;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import java.util.List;
 
@@ -18,9 +22,16 @@ public class MyTasksMB extends PageControllerMB {
 
     private List<Task> tasks;
 
+    @ManagedProperty("#{lazyLoading}")
+    LazyLoading lazyLoading;
+
     @Override
     public void loadData() {
-        tasks = ((Student) getLoginMB().getSignedUser()).getAssignedTasks();
+        tasks = lazyLoading.getTasksOfUser( getLoginMB().getSignedUser() );
+        for(Task task : tasks)
+        {
+            lazyLoading.getSubmissionsOfTask(task);
+        }
     }
 
     @Override
@@ -29,6 +40,11 @@ public class MyTasksMB extends PageControllerMB {
     }
 
     public Submission getSubmission(Task task) {
+        if(task.getSubmissions() == null)
+        {
+            lazyLoading.getSubmissionsOfTask(task);
+        }
+
         return task.getSubmissionFrom((Student) getLoginMB().getSignedUser());
     }
 
@@ -47,5 +63,15 @@ public class MyTasksMB extends PageControllerMB {
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
     }
+
+    public LazyLoading getLazyLoading() {
+        return lazyLoading;
+    }
+
+    public void setLazyLoading(LazyLoading lazyLoading) {
+        this.lazyLoading = lazyLoading;
+    }
+
+
 }
 

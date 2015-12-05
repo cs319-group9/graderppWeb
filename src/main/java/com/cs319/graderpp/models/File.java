@@ -11,11 +11,12 @@ public abstract class File {
     private InputStream inputStream;
     private long size;
 
-    public File(String fileName, String fullPath, InputStream inputStream, long size) {
+    public File(String fileName, String fullPath, long size) {
         this.fileName = fileName;
         this.fullPath = fullPath;
-        this.inputStream = inputStream;
         this.size = size;
+
+        this.inputStream = null;
     }
 
     public String getFileName() {

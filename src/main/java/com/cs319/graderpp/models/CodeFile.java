@@ -7,7 +7,7 @@ import java.io.InputStream;
  */
 public class CodeFile extends File {
 
-    public CodeFile(String fileName, String fullPath, InputStream inputStream, long size) {
-        super(fileName, fullPath, inputStream, size);
+    public CodeFile(String fileName, String fullPath, long size) {
+        super(fileName, fullPath, size);
     }
 }

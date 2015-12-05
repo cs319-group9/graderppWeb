@@ -14,13 +14,11 @@ public class Instructor extends User {
 
     public Instructor(String username, String password, String fullName) {
         super(username, password, fullName);
+        courses = null;
     }
 
     public List<Course> getCourses() {
-        if(courses != null)
             return this.courses;
-
-        return LazyLoading.getCoursesOfUser(this);
     }
 
     public void setCourses(List<Course> courses) {

@@ -2,6 +2,7 @@ package com.cs319.graderpp.misc;
 
 import com.cs319.graderpp.models.*;
 import com.cs319.graderpp.service.DataService;
+import org.springframework.stereotype.Service;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -15,7 +16,7 @@ import java.util.List;
 //And member objects are instantiated and set to the model
 // All methods are invoked from getter methods of models
 
-@ManagedBean
+@Service
 public class LazyLoading {
 
     @ManagedProperty("#{dataService}")

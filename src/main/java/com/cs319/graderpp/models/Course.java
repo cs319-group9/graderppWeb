@@ -55,10 +55,7 @@ public class Course {
     }
 
     public List<Task> getTasks() {
-        if(tasks != null)
-            return this.tasks;
-
-        return LazyLoading.getTasksOfCourse(this);
+        return this.tasks;
     }
 
     public void setTasks(List<Task> tasks) {

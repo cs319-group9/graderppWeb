@@ -1,5 +1,6 @@
 package com.cs319.graderpp.mbeans;
 
+import com.cs319.graderpp.misc.LazyLoading;
 import com.cs319.graderpp.models.Assistant;
 import com.cs319.graderpp.models.Course;
 import com.cs319.graderpp.models.Instructor;
@@ -8,6 +9,7 @@ import org.primefaces.component.tabview.Tab;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -29,14 +31,19 @@ public class TaskManagerMB extends PageControllerMB {
     private Task selectedTask;
     private Task tempTask;
 
+    @Autowired
+    LazyLoading lazyLoading;
+
     @Override
     public void loadData() {
         if (getLoginMB().getSignedUser() instanceof Instructor) {
             tasks = new ArrayList<Task>();
             for (Course course : ((Instructor) getLoginMB().getSignedUser()).getCourses()) {
-                for (Task task : course.getTasks()) {
+                //for (Task task : course.getTasks()) {
+                for (Task task : lazyLoading.getTasksOfCourse(course)) {
                     tasks.add(task);
                 }
+                course.setTasks(tasks);
             }
         } else if (getLoginMB().getSignedUser() instanceof Assistant) {
             tasks = ((Assistant) getLoginMB().getSignedUser()).getTasks();

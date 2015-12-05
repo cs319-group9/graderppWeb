@@ -43,8 +43,7 @@ public abstract class PageControllerMB {
         }
     }
 
-    public void loadData() {
-    }
+    public abstract void loadData();
 
     public void loadComponents() {
     }

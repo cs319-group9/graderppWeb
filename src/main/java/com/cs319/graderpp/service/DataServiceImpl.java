@@ -8,13 +8,20 @@ import java.util.List;
  * Created by burak on 07.11.2015.
  */
 public interface DataServiceImpl {
-    void addSubmission(Submission submission);
+
+    String addSubmission(Submission submission);
+    void updateTask(String taskId, Task newTask);
+    void addTask(Task task);
+    void addCourse(Course course);
+    User getSignedUser(String username, String password);
+
     List<Assistant> findAllAssistants();
+    List<Course> findAllCourses();
+    List<Student> findAllStudents();
     Task findTaskById(String taskId);
     Course findCourseById(String courseId);
     User findUserById(String userId);
     Submission findSubmissionById(String submissionId);
-    void updateTask(String taskId, Task newTask);
 
     List<Task> findAllTasksOfUser(User user);
     List<Submission> findSubmissionsOfUser(User user);
@@ -24,9 +31,6 @@ public interface DataServiceImpl {
     Task findTaskOfSubmission(String submissionId);
 
 
-    void addTask(Task task);
-    void addCourse(Course course);
-    User getSignedUser(String username, String password);
 
     //public List<User> getUserList();
     //public void setUserList(List<User> userList);

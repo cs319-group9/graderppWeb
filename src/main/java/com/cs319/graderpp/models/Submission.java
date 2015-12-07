@@ -27,6 +27,14 @@ public class Submission {
         this.codeFile = null;
     }
 
+    @Override
+    public boolean equals(Object object)
+    {
+        if(((Submission) object).getSubmissionId().equals(this.submissionId))
+            return true;
+        return false;
+    }
+
     public String filesToString() {
         if( codeFile != null) {
             String tmp = "name: " + codeFile.getFileName() + ", path: " + codeFile.getFullPath() + ", size: "

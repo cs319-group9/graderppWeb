@@ -46,19 +46,14 @@
                                              immediate="true">
                                 <p:ajax event="change" /><!--listener="#{submissionMB.taskChangeListener}" />-->
                                 <f:selectItem itemDisabled="true" itemValue="#{null}" itemLabel="--Select--" />
-                                <f:selectItems value="#{submissionMB.tasks}" var="task"
+                                <f:selectItems value="#{submissionMB.availableTasks}" var="task"
                                                itemLabel="#{task.taskName}" itemValue="#{task}"/>
                             </p:selectOneMenu>
 
                         </h:panelGrid>
 
-                       <!-- <p:fileUpload value="#{submissionMB.file}" mode="simple" skinSimple="true" sizeLimit="100000"
-                                      />-->
-
-                        <p:outputLabel styleClass="fa-italic">
-                            You can drag and drop your file to the area below.
-                            "zip" and "tar.gz" files are accepted only.
-                        </p:outputLabel>
+                        <!-- <p:fileUpload value="#{submissionMB.file}" mode="simple" skinSimple="true" sizeLimit="100000"
+                                       />-->
 
                         <p:fileUpload fileUploadListener="#{submissionMB.handleFileUpload}" mode="advanced"
                                       dragDropSupport="true"

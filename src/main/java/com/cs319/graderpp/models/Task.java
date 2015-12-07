@@ -35,6 +35,14 @@ public class Task {
         this.dueDate = dueDate;
     }
 
+    @Override
+    public boolean equals(Object object)
+    {
+        if(((Task) object).getTaskId().equals(this.taskId))
+            return true;
+        return false;
+    }
+
     public List<MakeFile> getMakeFiles() {
         return makeFiles;
     }

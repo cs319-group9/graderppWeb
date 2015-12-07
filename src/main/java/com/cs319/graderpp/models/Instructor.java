@@ -17,6 +17,14 @@ public class Instructor extends User {
         courses = null;
     }
 
+    @Override
+    public boolean equals(Object object)
+    {
+        if(((Instructor) object).getUserId().equals(this.getUserId()))
+            return true;
+        return false;
+    }
+
     public List<Course> getCourses() {
             return this.courses;
     }

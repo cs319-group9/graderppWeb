@@ -23,6 +23,14 @@ public class Student extends User {
         this.tasks = null;
     }
 
+    @Override
+    public boolean equals(Object object)
+    {
+        if(((Student) object).getUserId().equals(this.getUserId()))
+            return true;
+        return false;
+    }
+
     public List<Task> getTasks() {
         return tasks;
     }

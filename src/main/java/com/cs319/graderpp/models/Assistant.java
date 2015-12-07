@@ -17,6 +17,14 @@ public class Assistant extends User {
         tasks = null;
     }
 
+    @Override
+    public boolean equals(Object object)
+    {
+        if(((Assistant) object).getUserId().equals(this.getUserId()))
+            return true;
+        return false;
+    }
+
     public List<Task> getTasks() {
             return this.tasks;
     }

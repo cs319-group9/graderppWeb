@@ -30,7 +30,7 @@ import java.util.List;
 @ViewScoped
 public class SubmissionMB extends PageControllerMB {
 
-    private List<Task> tasks;
+    private List<Task> availableTasks;
     private Task selectedTask;
     private UploadedFile file;
 
@@ -41,9 +41,12 @@ public class SubmissionMB extends PageControllerMB {
     public void loadData() {
 
         //we are assigning the relevant task list but removing the ones which is submission made on it before
-        tasks = lazyLoading.getTasksOfUser(getLoginMB().getSignedUser());
+        List<Task> tasks = lazyLoading.getTasksOfUser(getLoginMB().getSignedUser());
+        availableTasks = new ArrayList<Task>(tasks);
+
         List<Submission> submissions = lazyLoading.getSubmissionsOfStudent((Student) getLoginMB().getSignedUser());
         List<Task> tasksToRemove = new ArrayList<Task>();
+
         for(Submission submission : submissions)
         {
             Task taskOfSubmission = lazyLoading.getTaskOfSubmission(submission);
@@ -60,7 +63,7 @@ public class SubmissionMB extends PageControllerMB {
 
         for(Task t : tasksToRemove)
         {
-            tasks.remove(t);
+            availableTasks.remove(t);
         }
 
         // tasks = getDataService().getRealDataService().findAllTasksOfUser((Student) getLoginMB().getSignedUser());
@@ -90,13 +93,13 @@ public class SubmissionMB extends PageControllerMB {
         this.file = event.getFile();
 
         // if task id is not set dont send
-       /* if (selectedTask == null) {
+        if (selectedTask == null) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Submission not made, please select a Task!"));
         } else {
-            int randId = (int) (Math.random() * 1000);
 
-            Submission submission = new Submission((Student) getLoginMB().getSignedUser(), DateTime.now(), selectedTask);
-            submission.setSubmissionId(randId);
+            Submission submission = new Submission((Student) getLoginMB().getSignedUser(), DateTime.now());
+            submission.setTask(selectedTask);
+            getDataService().getRealDataService().addSubmission(submission);
 
 
             //code below copies the uploaded file to the system
@@ -115,16 +118,14 @@ public class SubmissionMB extends PageControllerMB {
             }
 
             //instantiate CodeFile object for each file and add to the submission
-            CodeFile codeFile = new CodeFile(file.getFileName(), path + file.getFileName(), file.getInputstream(), file.getSize());
-            submission.getCodeFiles().add(codeFile);
+            CodeFile codeFile = new CodeFile(file.getFileName(), path + file.getFileName(), file.getSize());
+            codeFile.setInputStream(input);
 
-
-
-            getDataService().getRealDataService().addSubmission(submission);
+            submission.setCodeFile(codeFile);
 
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage("Submission Made to the Task: " + selectedTask.getTaskId()));
-        }*/
+        }
     }
 
     public Task getSelectedTask() {
@@ -135,13 +136,14 @@ public class SubmissionMB extends PageControllerMB {
         this.selectedTask = selectedTask;
     }
 
-    public List<Task> getTasks() {
-        return tasks;
+    public List<Task> getAvailableTasks() {
+        return availableTasks;
     }
 
-    public void setTasks(List<Task> tasks) {
-        this.tasks = tasks;
+    public void setAvailableTasks(List<Task> availableTasks) {
+        this.availableTasks = availableTasks;
     }
+
 
     public UploadedFile getFile() {
         return file;

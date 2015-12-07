@@ -26,6 +26,14 @@ public class Course {
         this.students = null;
     }
 
+    @Override
+    public boolean equals(Object object)
+    {
+        if(((Course) object).getCourseId().equals(this.courseId) )
+            return true;
+        return false;
+    }
+
     public String getCourseId() {
         return courseId;
     }

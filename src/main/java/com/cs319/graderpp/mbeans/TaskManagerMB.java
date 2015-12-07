@@ -28,29 +28,38 @@ import java.util.List;
 @ViewScoped
 public class TaskManagerMB extends PageControllerMB {
 
-    private List<Task> tasks;
+    private List<Task> availableTasks;
     private Task selectedTask;
     private Task tempTask;
+    private List<Course> allCourses;
+    private List<Assistant> allAssistants;
+
 
     @ManagedProperty("#{lazyLoading}")
     private LazyLoading lazyLoading;
 
     @Override
     public void loadData() {
+
+        //LOAD ALL THE AVALIABLE TASKS FOR THE CURRENT USER
         if (getLoginMB().getSignedUser() instanceof Instructor) {
-            tasks = new ArrayList<Task>();
+            availableTasks = new ArrayList<Task>();
             for (Course course : lazyLoading.getCoursesOfUser(getLoginMB().getSignedUser())) {
                 //for (Task task : course.getTasks()) {
                 for (Task task : lazyLoading.getTasksOfCourse(course)) {
-                    tasks.add(task);
+                    availableTasks.add(task);
                 }
-                course.setTasks(tasks);
             }
         } else if (getLoginMB().getSignedUser() instanceof Assistant) {
-            tasks = ((Assistant) getLoginMB().getSignedUser()).getTasks();
+            availableTasks = lazyLoading.getTasksOfUser(getLoginMB().getSignedUser());
+
         }
 
+        //INITIALIZE OTHER PROPERTIES
         tempTask = new Task();
+        selectedTask = null;
+        allCourses = getDataService().getRealDataService().findAllCourses();
+        allAssistants = getDataService().getRealDataService().findAllAssistants();
     }
 
     @Override
@@ -75,12 +84,23 @@ public class TaskManagerMB extends PageControllerMB {
         return false;
     }
 
+    public void lazyLoadSelectedTask()
+    {
+        if(selectedTask == null)
+            System.out.println("selectedTask null cannot lazyload it");
+        else
+        {
+            int len = lazyLoading.getSubmissionsOfTask(selectedTask).size();
+            System.out.println("selectedTask " + selectedTask.getTaskName() + " lazyloaded with " + len + " submissions");
+        }
+    }
+
     public List<Task> getTasks() {
-        return tasks;
+        return availableTasks;
     }
 
     public void setTasks(List<Task> tasks) {
-        this.tasks = tasks;
+        this.availableTasks = availableTasks;
     }
 
     public Task getSelectedTask() {
@@ -96,12 +116,26 @@ public class TaskManagerMB extends PageControllerMB {
         if (tempTask != null) {
             //tempTask.setTaskId((int) (Math.random() * 1000));
 
-            //getDataService().getRealDataService().addTask(tempTask);
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage("Task added: " + tempTask.getTaskName() + ", ID:" + tempTask.getTaskId()));
+            if(tempTask.getCourse() != null
+                    && tempTask.getAssistant() != null)
+            {
+                getDataService().getRealDataService().addTask(tempTask);
 
-            //UPDATE THE TASK LIST
-            //tasks = getDataService().getRealDataService().getTaskList();
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage("Task added: " + tempTask.getTaskName() + ", ID:" + tempTask.getTaskId()));
+
+                System.out.println(
+                        "Task name: " + tempTask.getTaskName() +
+                                "id " + tempTask.getTaskId() +
+                                "ta " + tempTask.getAssistant().getUsername() +
+                                " ta id: " + tempTask.getAssistant().getUserId()
+                );
+            }
+            else
+            {
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage("Task not added"));
+            }
 
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Task cannot be added!"));
@@ -153,5 +187,29 @@ public class TaskManagerMB extends PageControllerMB {
 
     public void setLazyLoading(LazyLoading lazyLoading) {
         this.lazyLoading = lazyLoading;
+    }
+
+    public List<Task> getAvailableTasks() {
+        return availableTasks;
+    }
+
+    public void setAvailableTasks(List<Task> availableTasks) {
+        this.availableTasks = availableTasks;
+    }
+
+    public List<Assistant> getAllAssistants() {
+        return allAssistants;
+    }
+
+    public void setAllAssistants(List<Assistant> allAssistants) {
+        this.allAssistants = allAssistants;
+    }
+
+    public List<Course> getAllCourses() {
+        return allCourses;
+    }
+
+    public void setAllCourses(List<Course> allCourses) {
+        this.allCourses = allCourses;
     }
 }

@@ -74,7 +74,8 @@
                                     <p:column headerText="Submissions" style="text-align: center">
 
                                         <p:commandButton icon="ui-icon-search" oncomplete="PF('taskWizard').next()"
-                                                         update=":main-form:submissionTabPanel">
+                                                         update=":main-form:submissionTabPanel"
+                                                         action="#{taskManagerMB.lazyLoadSelectedTask}">
                                             <f:setPropertyActionListener value="#{task}"
                                                                          target="#{taskManagerMB.selectedTask}"/>
                                         </p:commandButton>
@@ -205,10 +206,9 @@
                             <h:panelGrid columns="2" cellpadding="5">
 
                                 <p:outputLabel for="selectedCourse2" value="Course: "/>
-                                <p:selectOneMenu id="selectedCourse2" converter="#{courseConverter}"
-                                                 value="#{taskManagerMB.tempTask.course}">
-                                    <f:selectItems value="#{taskManagerMB.dataService.realDataService.courseList}" var="course"
-                                                   itemLabel="#{course.courseCode}" itemValue="#{course}"/>
+                                <p:selectOneMenu id="selectedCourse2">
+                                    <f:selectItem value="#{taskManagerMB.tempTask.course}"
+                                                   itemLabel="#{course.courseCode}" itemDisabled="true"/>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel for="taskName2" value="Task Name: "/>
@@ -221,7 +221,7 @@
                                 <p:outputLabel for="assistant2" value="Assistant: "/>
                                 <p:selectOneMenu id="assistant2" converter="#{assistantConverter}"
                                                  value="#{taskManagerMB.tempTask.assistant}">
-                                    <f:selectItems value="#{taskManagerMB.dataService.realDataService.findAllAssistants()}" var="assistant"
+                                    <f:selectItems value="#{taskManagerMB.allAssistants}" var="assistant"
                                                    itemLabel="#{assistant.fullName}" itemValue="#{assistant}"/>
                                 </p:selectOneMenu>
 
@@ -241,7 +241,7 @@
                                 <p:outputLabel for="selectedCourse" value="Course: "/>
                                 <p:selectOneMenu id="selectedCourse" converter="#{courseConverter}"
                                                  value="#{taskManagerMB.tempTask.course}">
-                                    <f:selectItems value="#{taskManagerMB.dataService.realDataService.courseList}" var="course"
+                                    <f:selectItems value="#{taskManagerMB.allCourses}" var="course"
                                                    itemLabel="#{course.courseCode}" itemValue="#{course}"/>
                                 </p:selectOneMenu>
 
@@ -255,7 +255,7 @@
                                 <p:outputLabel for="assistant" value="Assistant: "/>
                                 <p:selectOneMenu id="assistant" converter="#{assistantConverter}"
                                                  value="#{taskManagerMB.tempTask.assistant}">
-                                    <f:selectItems value="#{taskManagerMB.dataService.realDataService.findAllAssistants()}" var="assistant"
+                                    <f:selectItems value="#{taskManagerMB.allAssistants}" var="assistant"
                                                    itemLabel="#{assistant.fullName}" itemValue="#{assistant}"/>
                                 </p:selectOneMenu>
 

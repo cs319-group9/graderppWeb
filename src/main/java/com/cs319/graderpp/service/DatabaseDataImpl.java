@@ -40,7 +40,7 @@ public class DatabaseDataImpl implements DataServiceImpl {
         _task_list = db.getCollection(_collection_keys[2]);
         _submission_list = db.getCollection(_collection_keys[3]);
 
-        //generateDemoDB(true, 3, 3, 3, 3, 3, 3);
+        //generateDemoDB(true, 13, 13, 13, 13, 13, 13);
 
         //System.out.println("collections created or connected successfuly");
         /*
@@ -597,11 +597,12 @@ public class DatabaseDataImpl implements DataServiceImpl {
 
 
 
-    public void addSubmission(Submission submission) {
+    public String addSubmission(Submission submission) {
         String task_id = submission.getTask().getTaskId();
         String student_id = submission.getSubmitter().getUserId();
 
-        addSubmission(task_id, student_id);
+        String id = addSubmission(task_id, student_id);
+        return id;
     }
 
     public Task findTaskById(String taskId) {
@@ -751,6 +752,24 @@ public class DatabaseDataImpl implements DataServiceImpl {
         return s;
     }
 
+    public List<Course> findAllCourses() {
+        Document c_doc = new Document();
+        FindIterable<Document> iterable = _course_list.find(c_doc);
+
+        ArrayList<Course> l = new ArrayList<Course>();
+
+        for(Document d : iterable){
+            String id = d.getObjectId("_id").toHexString();
+            Course c = findCourseById(id);
+            if(c != null)
+            {
+                c.setCourseId(id);
+                l.add(c);
+            }
+        }
+        return l;
+    }
+
     public List<Assistant> findAllAssistants() {
         Document ta_doc = new Document(_user_keys[4], MongoUserType2string(MongoUserType.ta));
         FindIterable<Document> iterable = _user_list.find(ta_doc);
@@ -764,6 +783,27 @@ public class DatabaseDataImpl implements DataServiceImpl {
             a.setUserId(id);
             a.setTasks(null);
             l.add(a);
+        }
+        return l;
+    }
+
+    public List<Student> findAllStudents() {
+        Document std_doc = new Document(_user_keys[4], MongoUserType2string(MongoUserType.student));
+        FindIterable<Document> iterable = _user_list.find(std_doc);
+
+        ArrayList<Student> l = new ArrayList<Student>();
+
+        for(Document d : iterable){
+            String id = d.getObjectId("_id").toHexString();
+            User u = findUserById(id);
+            Student s = new Student(u.getUsername(), u.getPassword(), u.getFullName());
+            s.setUserId(id);
+
+            s.setCourses(null);
+            s.setTasks(null);
+            s.setSubmissions(null);
+
+            l.add(s);
         }
         return l;
     }
@@ -810,12 +850,13 @@ public class DatabaseDataImpl implements DataServiceImpl {
         List<Task> tasks = new ArrayList<Task>();
 
         Document course = new Document();
-        course.append(_course_keys[0], new ObjectId(courseId));
+        course.append(_task_keys[2], courseId);
 
         FindIterable<Document> iterable = _task_list.find(course);
 
         for (Document d : iterable){
             String task_id = d.getObjectId(_task_keys[0]).toHexString();
+            System.out.println("in findtasksofcourse for loop with id " + task_id);
             tasks.add( findTaskById(task_id) );
         }
 
@@ -827,7 +868,7 @@ public class DatabaseDataImpl implements DataServiceImpl {
         List<Submission> submissions = new ArrayList<Submission>();
 
         Document task = new Document();
-        task.append(_task_keys[0], new ObjectId(taskId));
+        task.append(_submission_keys[1], taskId);
 
         FindIterable<Document> iterable = _submission_list.find(task);
 

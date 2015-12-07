@@ -72,9 +72,22 @@
         </dependency>
 
         <dependency>
-            <groupId>org.primefaces.themes</groupId>
-            <artifactId>glass-x</artifactId>
-            <version>1.0.6</version>
+            <groupId>org.primefaces.extensions</groupId>
+            <artifactId>all-themes</artifactId>
+            <version>1.0.8</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.10-FINAL</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+            <version>5.5.6</version>
         </dependency>
 
         <dependency>
@@ -130,8 +143,12 @@
             <version>1.9</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>3.1.0</version>
+        </dependency>
 
     </dependencies>
-
 
 </project>

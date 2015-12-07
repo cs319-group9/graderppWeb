@@ -46,7 +46,7 @@
                                          icon="ui-icon-extlink"/>
 
                         <p:wizard widgetVar="taskWizard"
-                                  showNavBar="false"><!-- flowListener="#{taskManagerMB.onFlowProcess}">-->
+                                  showNavBar="false" showStepStatus="false"><!-- flowListener="#{taskManagerMB.onFlowProcess}">-->
                             <p:tab id="tasksTab" title="Tasks">
 
                                 <p:dataTable id="tasksDT" var="task" value="#{taskManagerMB.tasks}">
@@ -86,10 +86,11 @@
                                     </p:column>-->
                                     <p:column headerText="Edit Task" style="text-align: center">
 
-                                        <p:commandButton onclick="PF('editTaskDG').show();" type="button"
+                                        <p:commandButton oncomplete="PF('editTaskDG').show();"
+                                                         update=":#{p:component('editTaskPanel')}"
                                                          icon="ui-icon-pencil">
                                             <f:setPropertyActionListener value="#{task}"
-                                                                         target="#{taskManagerMB.tempTask}"/>
+                                                                         target="#{taskManagerMB.taskToEdit}"/>
                                         </p:commandButton>
                                     </p:column>
 
@@ -202,40 +203,42 @@
 
                         </p:wizard>
 
-                        <p:dialog header="Edit Task" widgetVar="editTaskDG" focus="taskName">
+                        <p:dialog modal="true" resizable="false" header="Edit Task" widgetVar="editTaskDG" focus="taskName2">
+                            <p:panel id="editTaskPanel">
                             <h:panelGrid columns="2" cellpadding="5">
 
                                 <p:outputLabel for="selectedCourse2" value="Course: "/>
-                                <p:selectOneMenu id="selectedCourse2">
-                                    <f:selectItem value="#{taskManagerMB.tempTask.course}"
-                                                   itemLabel="#{course.courseCode}" itemDisabled="true"/>
+                                <p:selectOneMenu id="selectedCourse2" disabled="true">
+                                    <f:selectItem itemValue="#{taskManagerMB.taskToEdit.course.courseCode}"
+                                                  itemLabel="#{taskManagerMB.taskToEdit.course.courseCode}" />
                                 </p:selectOneMenu>
 
                                 <p:outputLabel for="taskName2" value="Task Name: "/>
-                                <p:inputText id="taskName2" value="#{taskManagerMB.tempTask.taskName}"/>
+                                <p:inputText id="taskName2" value="#{taskManagerMB.taskToEdit.taskName}"/>
 
                                 <p:outputLabel for="dueDate2" value="Due Date: "/>
-                                <p:calendar id="dueDate2" value="#{taskManagerMB.tempTask.dueDate}" pattern="dd-MM-yyyy"
+                                <p:calendar id="dueDate2" value="#{taskManagerMB.taskToEdit.dueDate}" pattern="dd-MM-yyyy"
                                             mask="true"/>
 
                                 <p:outputLabel for="assistant2" value="Assistant: "/>
                                 <p:selectOneMenu id="assistant2" converter="#{assistantConverter}"
-                                                 value="#{taskManagerMB.tempTask.assistant}">
+                                                 value="#{taskManagerMB.taskToEdit.assistant}">
                                     <f:selectItems value="#{taskManagerMB.allAssistants}" var="assistant"
                                                    itemLabel="#{assistant.fullName}" itemValue="#{assistant}"/>
                                 </p:selectOneMenu>
 
                                 <p:commandButton value="Save Changes" oncomplete="PF('editTaskDG').hide()"
-                                                 action="#{taskManagerMB.editTask()}"
-                                                 update=":main-form:growl :main-form:tasksDT"/>
+                                                 action="#{taskManagerMB.finishEditTask()}"
+                                                 update=":main-form:growl"/>
                                 <p:commandButton value="Cancel" oncomplete="PF('editTaskDG').hide()"
                                                  immediate="true" icon="ui-icon-close"/>
 
                                 <p:commandButton value="Reset" type="reset"/>
                             </h:panelGrid>
+                            </p:panel>
                         </p:dialog>
 
-                        <p:dialog header="New Task" widgetVar="addTaskDG" focus="taskName">
+                        <p:dialog modal="true" resizable="false" header="New Task" widgetVar="addTaskDG" focus="taskName">
                             <h:panelGrid columns="2" cellpadding="5">
 
                                 <p:outputLabel for="selectedCourse" value="Course: "/>

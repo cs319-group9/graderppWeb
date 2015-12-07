@@ -28,7 +28,7 @@ public class CourseConverter implements Converter {
 
     public String getAsString(FacesContext context, UIComponent component, Object value) {
         Course tmp = (Course) value;
-        System.out.println("Course name " + tmp.getCourseCode() + " id " + tmp.getCourseId());
+        //System.out.println("Course name " + tmp.getCourseCode() + " id " + tmp.getCourseId());
         return tmp.getCourseId() + "";
     }
 

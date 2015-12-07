@@ -33,14 +33,19 @@ public class DatabaseDataImpl implements DataServiceImpl {
     public enum MongoModelType{course, task, submission};
 
     public DatabaseDataImpl(){
+        //MongoClient mongoClient = new MongoClient(
+        ///       new MongoClientURI("mongodb://root:graderpp@ds043694.mongolab.com:43694/graderpp"));
+       // MongoDatabase db = mongoClient.getDatabase("graderpp");
+
         MongoClient mongoClient = new MongoClient("localhost");
         MongoDatabase db = mongoClient.getDatabase("db0");
+
         _user_list = db.getCollection(_collection_keys[0]);
         _course_list = db.getCollection(_collection_keys[1]);
         _task_list = db.getCollection(_collection_keys[2]);
         _submission_list = db.getCollection(_collection_keys[3]);
 
-        //generateDemoDB(true, 13, 13, 13, 13, 13, 13);
+        generateDemoDB(false, 13, 13, 13, 13, 13, 13);
 
         //System.out.println("collections created or connected successfuly");
         /*

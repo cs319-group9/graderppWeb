@@ -31,6 +31,7 @@ public class TaskManagerMB extends PageControllerMB {
     private List<Task> availableTasks;
     private Task selectedTask;
     private Task tempTask;
+    private Task taskToEdit;
     private List<Course> allCourses;
     private List<Assistant> allAssistants;
 
@@ -58,6 +59,7 @@ public class TaskManagerMB extends PageControllerMB {
         //INITIALIZE OTHER PROPERTIES
         tempTask = new Task();
         selectedTask = null;
+        taskToEdit = new Task();
         allCourses = getDataService().getRealDataService().findAllCourses();
         allAssistants = getDataService().getRealDataService().findAllAssistants();
     }
@@ -142,25 +144,30 @@ public class TaskManagerMB extends PageControllerMB {
         }
     }
 
-    public void editTask() {
-        /*if (tempTask != null) {
-            //selectedTask.setTaskId( (int)(Math.random() * 1000) );
-            //getService().getTaskList().add(tempTask);
+    public void prepareEditTask(Task task)
+    {
+        System.out.println("on prepare edit task");
+        tempTask.setTaskId(task.getTaskId());
+        tempTask.setDueDate(task.getDueDate());
+        tempTask.setCourse(task.getCourse());
+        tempTask.setAssistant(task.getAssistant());
+        tempTask.setTaskName(task.getTaskName());
+    }
+
+    public void finishEditTask() {
+        if (tempTask != null) {
+            System.out.println( "task id: " + tempTask.getTaskId()
+                                + "task name: " + tempTask.getTaskName() +
+                                "task course: " + tempTask.getCourse() );
 
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage("Task added: " + tempTask.getTaskName() + ", ID:" + tempTask.getTaskId()));
-
-            //UPDATE THE TASK LIST
-            tasks = getService().getTaskList();
-
-            //update the course
-            tempTask.getCourse().getTasks().add(tempTask);
 
         }
         else
         {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Task cannot be added!"));
-        }*/
+        }
     }
 
     public Task getTempTask() {
@@ -211,5 +218,13 @@ public class TaskManagerMB extends PageControllerMB {
 
     public void setAllCourses(List<Course> allCourses) {
         this.allCourses = allCourses;
+    }
+
+    public Task getTaskToEdit() {
+        return taskToEdit;
+    }
+
+    public void setTaskToEdit(Task taskToEdit) {
+        this.taskToEdit = taskToEdit;
     }
 }

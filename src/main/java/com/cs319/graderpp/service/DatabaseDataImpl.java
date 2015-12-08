@@ -8,6 +8,7 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 
 import javax.print.Doc;
@@ -28,7 +29,7 @@ public class DatabaseDataImpl implements DataServiceImpl {
             "course_list", "task_list", "submission_list"};
     private String[] _course_keys = {"_id", "name", "code", "instructor_id"};
     private String[] _task_keys = {"_id", "name", "course_id", "ta_id", "due_date"};
-    private String[] _submission_keys = {"_id", "task_id", "student_id","due_date"};
+    private String[] _submission_keys = {"_id", "task_id", "student_id","submission_date"};
     public enum MongoUserType {student, ta, instructor};
     public enum MongoModelType{course, task, submission};
 
@@ -45,7 +46,7 @@ public class DatabaseDataImpl implements DataServiceImpl {
         _task_list = db.getCollection(_collection_keys[2]);
         _submission_list = db.getCollection(_collection_keys[3]);
 
-        generateDemoDB(false, 13, 13, 13, 13, 13, 13);
+        generateDemoDB(true, 13, 13, 13, 13, 13, 13);
 
         //System.out.println("collections created or connected successfuly");
         /*
@@ -124,7 +125,7 @@ public class DatabaseDataImpl implements DataServiceImpl {
             String name = "task" + i;
             String course_id = course_ids.get(i % course_count);
             String ta_id = ta_ids.get(i % ta_count);
-            String due_date = "0" + i;
+            Date due_date = DateTime.now().toDate();
             String id = addTask(name, course_id, ta_id, due_date);
             if (id == null){
                 return false;
@@ -140,7 +141,8 @@ public class DatabaseDataImpl implements DataServiceImpl {
                 return false;
             }
             String task_id = l.get(0).toString();
-            String id = addSubmission(task_id, student_id);
+            Date submission_date = DateTime.now().toDate();
+            String id = addSubmission(task_id, student_id, submission_date);
             if (id == null){
                 return false;
             }
@@ -224,7 +226,7 @@ public class DatabaseDataImpl implements DataServiceImpl {
         return unsubscribeAllFromModel(course_id, MongoModelType.course, course_id, MongoModelType.course, scope_doc);
     }
 
-    private String addTask(String name, String course_id, String ta_id, String due_date){
+    private String addTask(String name, String course_id, String ta_id, Date due_date){
         Document new_task = new Document();
 
         new_task.append(_task_keys[1], name);
@@ -267,11 +269,12 @@ public class DatabaseDataImpl implements DataServiceImpl {
         return unsubscribeAllFromModel(task_id, MongoModelType.task, task_id, MongoModelType.task, scope_doc);
     }
 
-    private String addSubmission(String task_id, String student_id){
+    private String addSubmission(String task_id, String student_id, Date submission_date){
 
         Document new_submission = new Document();
         new_submission.append(_submission_keys[1], task_id);
         new_submission.append(_submission_keys[2], student_id);
+        new_submission.append(_submission_keys[3], submission_date);
 
         FindIterable<Document> iterable = _submission_list.find(new_submission);
         if (iterable.first() != null){  // already have this submission
@@ -606,7 +609,7 @@ public class DatabaseDataImpl implements DataServiceImpl {
         String task_id = submission.getTask().getTaskId();
         String student_id = submission.getSubmitter().getUserId();
 
-        String id = addSubmission(task_id, student_id);
+        String id = addSubmission(task_id, student_id, submission.getSubmissionDate());
         return id;
     }
 
@@ -618,7 +621,7 @@ public class DatabaseDataImpl implements DataServiceImpl {
         String task_name = task.getString(_task_keys[1]);
         String course_id = task.getString(_task_keys[2]);
         String ta_id = task.getString(_task_keys[3]);
-        String due_date = task.getString(_task_keys[4]);
+        Date due_date = task.getDate(_task_keys[4]);
 
         //_task_keys = {"_id", "name", "course_id", "ta_id", "due_date"};
         Task t = new Task(task_name, null);
@@ -627,10 +630,12 @@ public class DatabaseDataImpl implements DataServiceImpl {
         t.setCourse(findCourseById(course_id));
         t.setAssistant((Assistant) findUserById(ta_id));
         t.setTaskId(taskId);
+        t.setDueDate(due_date);
 
         t.setSubmissions(null);
         t.setMakeFiles(null);
-        t.setTestCaseFiles(null);
+        t.setInputTestFiles(null);
+        t.setOutputTestFiles(null);
 
         return t;
     }
@@ -739,20 +744,21 @@ public class DatabaseDataImpl implements DataServiceImpl {
 
         String task_id = submission.getString(_submission_keys[1]);
         String student_id = submission.getString(_submission_keys[2]);
+        Date submissionDate = submission.getDate(_submission_keys[3]);
 
         Student submitter = findStudentById(student_id);
 
 
-        Submission s = new Submission(submitter, null);
+        Submission s = new Submission(submitter);
+        s.setSubmissionDate(submissionDate);
+
         Task t = findTaskById(task_id);
         s.setTask(t);
-
         s.setSubmissionId(submissionId);
 
         s.setEvaluated(false);
         s.setCodeFile(null);
         s.setGrade(-1);
-        s.setSubmissionDate(null);
 
         return s;
     }
@@ -890,7 +896,7 @@ public class DatabaseDataImpl implements DataServiceImpl {
         String name = task.getTaskName();
         String course_id = task.getCourse().getCourseId();
         String ta_id = task.getAssistant().getUserId();
-        String due_date = task.getDueDate().toString();
+        Date due_date = task.getDueDate();
 
         String task_id = addTask(name, course_id, ta_id, due_date);
         task.setTaskId(task_id);

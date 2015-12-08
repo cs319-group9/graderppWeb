@@ -52,10 +52,26 @@
                                 <h:outputText value="#{task.taskName}"/>
                             </p:column>
                             <p:column headerText="Due">
-                                <h:outputText value="#{task.dueDate}"/>
+                                <h:outputText value="#{task.getReadableDueDate()}"/>
                             </p:column>
                             <p:column headerText="Course">
                                 <h:outputText value="#{task.course.courseCode}"/>
+                            </p:column>
+
+                            <p:column headerText="Memory Size">
+                                <h:outputText value="#{task.memorySize}" />
+                            </p:column>
+
+                            <p:column headerText="Stack Size">
+                                <h:outputText value="#{task.stackSize}" />
+                            </p:column>
+
+                            <p:column headerText="Number of Processes">
+                                <h:outputText value="#{task.numProcesses}" />
+                            </p:column>
+
+                            <p:column headerText="Time Limit (sec)">
+                                <h:outputText value="#{task.timeLimitInSeconds}" />
                             </p:column>
                             <p:column>
                                 <p:rowToggler rendered="#{not empty myTasksMB.getSubmission(task)}"/>
@@ -76,13 +92,21 @@
                                     <h:outputText value="#{myTasksMB.getSubmission(task).submissionId}"/>
 
                                     <h:outputText value="Submission Date"/>
-                                    <h:outputText value="#{myTasksMB.getSubmission(task).submissionDate}"/>
+                                    <h:outputText value="#{myTasksMB.getSubmission(task).getReadableSubmissionDate()}"/>
+
+                                    <h:outputText value="CodeFiles:"/>
+                                    <h:outputText value="#{myTasksMB.getSubmission(task).filesToString()}"/>
 
                                     <h:outputText value="Evaluated:"/>
                                     <h:outputText value="#{myTasksMB.getSubmission(task).evaluated}"/>
 
-                                    <h:outputText value="CodeFiles:"/>
-                                    <h:outputText value="#{myTasksMB.getSubmission(task).filesToString()}"/>
+                                    <h:outputText value="Evaluation Status:"/>
+                                    <h:outputText value="#{myTasksMB.getSubmission(task).evalStatus}"/>
+
+                                    <h:outputText value="Grade:"/>
+                                    <h:outputText value="#{myTasksMB.getSubmission(task).grade}"/>
+
+
 
                                 </p:panelGrid>
                             </p:rowExpansion>

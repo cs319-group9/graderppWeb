@@ -8,7 +8,9 @@ import com.cs319.graderpp.models.Task;
 import org.primefaces.component.tabview.Tab;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.FlowEvent;
+import org.primefaces.model.UploadedFile;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.faces.application.FacesMessage;
@@ -34,6 +36,9 @@ public class TaskManagerMB extends PageControllerMB {
     private Task taskToEdit;
     private List<Course> allCourses;
     private List<Assistant> allAssistants;
+
+    private List<UploadedFile> inputFiles;
+    private List<UploadedFile> outputFiles;
 
 
     @ManagedProperty("#{lazyLoading}")
@@ -62,6 +67,9 @@ public class TaskManagerMB extends PageControllerMB {
         taskToEdit = new Task();
         allCourses = getDataService().getRealDataService().findAllCourses();
         allAssistants = getDataService().getRealDataService().findAllAssistants();
+
+        inputFiles = new ArrayList<UploadedFile>();
+        outputFiles = new ArrayList<UploadedFile>();
     }
 
     @Override
@@ -132,6 +140,9 @@ public class TaskManagerMB extends PageControllerMB {
                                 "ta " + tempTask.getAssistant().getUsername() +
                                 " ta id: " + tempTask.getAssistant().getUserId()
                 );
+
+                System.out.println( "task input files: " + inputFiles.size() );
+                System.out.println( "task output files: " + outputFiles.size() );
             }
             else
             {
@@ -142,16 +153,6 @@ public class TaskManagerMB extends PageControllerMB {
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Task cannot be added!"));
         }
-    }
-
-    public void prepareEditTask(Task task)
-    {
-        System.out.println("on prepare edit task");
-        tempTask.setTaskId(task.getTaskId());
-        tempTask.setDueDate(task.getDueDate());
-        tempTask.setCourse(task.getCourse());
-        tempTask.setAssistant(task.getAssistant());
-        tempTask.setTaskName(task.getTaskName());
     }
 
     public void finishEditTask() {
@@ -168,6 +169,22 @@ public class TaskManagerMB extends PageControllerMB {
         {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Task cannot be added!"));
         }
+    }
+
+    public void handleInputFilesUpload(FileUploadEvent event) {
+
+        System.out.println("handleInputFilesUpload :  " + event.getFile().getFileName());
+        inputFiles.add(event.getFile());
+//        FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
+//        FacesContext.getCurrentInstance().addMessage(null, message);
+    }
+
+    public void handleOutputFilesUpload(FileUploadEvent event) {
+
+        System.out.println("handleOutputFilesUpload :  " + event.getFile().getFileName());
+        outputFiles.add(event.getFile());
+//        FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
+//        FacesContext.getCurrentInstance().addMessage(null, message);
     }
 
     public Task getTempTask() {

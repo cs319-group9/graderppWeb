@@ -43,7 +43,8 @@
                              style="margin-bottom:20px">
 
                         <p:commandButton value="New Task" onclick="PF('addTaskDG').show();" type="button"
-                                         icon="ui-icon-extlink"/>
+                                         icon="ui-icon-extlink"
+                                         rendered="#{taskManagerMB.isInstructor()}"/>
 
                         <p:wizard widgetVar="taskWizard"
                                   showNavBar="false" showStepStatus="false"><!-- flowListener="#{taskManagerMB.onFlowProcess}">-->
@@ -60,11 +61,29 @@
                                         <h:outputText value="#{task.taskName}"/>
                                     </p:column>
                                     <p:column headerText="Due">
-                                        <h:outputText value="#{task.dueDate}"/>
+                                        <h:outputText value="#{task.getReadableDueDate()}"/>
                                     </p:column>
                                     <p:column headerText="Course">
                                         <h:outputText value="#{task.course.courseCode}"/>
                                     </p:column>
+
+                                    <p:column headerText="Memory Size">
+                                        <h:outputText value="#{task.memorySize}" />
+                                    </p:column>
+
+                                    <p:column headerText="Stack Size">
+                                        <h:outputText value="#{task.stackSize}" />
+                                    </p:column>
+
+                                    <p:column headerText="Number of Processes">
+                                        <h:outputText value="#{task.numProcesses}" />
+                                    </p:column>
+
+                                    <p:column headerText="Time Limit (sec)">
+                                        <h:outputText value="#{task.timeLimitInSeconds}" />
+                                    </p:column>
+
+
                                     <!--<p:column headerText="Show Submissions" style="text-align: center">
                                         <p:commandButton update=":#{p:component('showSubmissions')}" oncomplete="PF('submissionsDG').show()" icon="ui-icon-search" title="View">
                                             <f:setPropertyActionListener value="#{task}" target="#{taskManagerMB.selectedTask}" />
@@ -84,7 +103,8 @@
                                     <!--<p:column headerText="Show Submissions">
                                         <p:rowToggler />
                                     </p:column>-->
-                                    <p:column headerText="Edit Task" style="text-align: center">
+                                    <p:column headerText="Edit Task" style="text-align: center"
+                                              rendered="#{taskManagerMB.isInstructor()}">
 
                                         <p:commandButton oncomplete="PF('editTaskDG').show();"
                                                          update=":#{p:component('editTaskPanel')}"
@@ -182,7 +202,7 @@
                                             <h:outputText value="#{submission.submitter.username}"/>
                                         </p:column>
                                         <p:column headerText="Submission Date">
-                                            <h:outputText value="#{submission.submissionDate.toString()}"/>
+                                            <h:outputText value="#{submission.getReadableSubmissionDate()}"/>
                                         </p:column>
                                         <p:column headerText="ID">
                                             <h:outputText value="#{submission.submissionId}"/>
@@ -203,7 +223,9 @@
 
                         </p:wizard>
 
-                        <p:dialog modal="true" resizable="false" header="Edit Task" widgetVar="editTaskDG" focus="taskName2">
+                        <p:dialog modal="true" resizable="false"
+                                  header="Edit Task" widgetVar="editTaskDG" focus="taskName2"
+                                    rendered="#{taskManagerMB.isInstructor()}">
                             <p:panel id="editTaskPanel">
                             <h:panelGrid columns="2" cellpadding="5">
 
@@ -238,7 +260,9 @@
                             </p:panel>
                         </p:dialog>
 
-                        <p:dialog modal="true" resizable="false" header="New Task" widgetVar="addTaskDG" focus="taskName">
+                        <p:dialog modal="true" resizable="false" header="New Task"
+                                  widgetVar="addTaskDG" focus="taskName"
+                                  rendered="#{taskManagerMB.isInstructor()}">
                             <h:panelGrid columns="2" cellpadding="5">
 
                                 <p:outputLabel for="selectedCourse" value="Course: "/>
@@ -261,6 +285,32 @@
                                     <f:selectItems value="#{taskManagerMB.allAssistants}" var="assistant"
                                                    itemLabel="#{assistant.fullName}" itemValue="#{assistant}"/>
                                 </p:selectOneMenu>
+
+                                <span></span>
+                                <p:fileUpload mode="advanced" multiple="true" dragDropSupport="true"
+                                              label="Input Files"
+                                              fileUploadListener="#{taskManagerMB.handleInputFilesUpload}" />
+
+                                <span></span>
+                                <p:fileUpload mode="advanced" multiple="true" dragDropSupport="true"
+                                              label="Output Files"
+                                              fileUploadListener="#{taskManagerMB.handleOutputFilesUpload}" />
+
+                                <p:outputLabel for="memorySize" value="Memory Size: "/>
+                                <p:inputMask id="memorySize" value="#{taskManagerMB.tempTask.memorySize}"
+                                                mask="99"/>
+
+                                <p:outputLabel for="stackSize" value="Stack Size: "/>
+                                <p:inputMask id="stackSize" value="#{taskManagerMB.tempTask.stackSize}"
+                                             mask="99"/>
+
+                                <p:outputLabel for="numProcesses" value="Number of Processes (-1 is unlimited): "/>
+                                <p:inputMask id="numProcesses" value="#{taskManagerMB.tempTask.numProcesses}"
+                                             mask="99"/>
+
+                                <p:outputLabel for="timeLimit" value="Time Limit (in seconds): "/>
+                                <p:inputMask id="timeLimit" value="#{taskManagerMB.tempTask.timeLimitInSeconds}"
+                                             mask="999.99"/>
 
                                 <p:commandButton value="Add" oncomplete="PF('addTaskDG').hide()"
                                                  action="#{taskManagerMB.addTask()}"

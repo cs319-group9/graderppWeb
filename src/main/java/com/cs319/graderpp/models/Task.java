@@ -1,6 +1,7 @@
 package com.cs319.graderpp.models;
 
 import com.cs319.graderpp.misc.LazyLoading;
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,18 +16,26 @@ public class Task {
     private String taskName;
     private Date dueDate;
 
+    private int numTestCases;
+    private int memorySize;
+    private int stackSize;
+    private int numProcesses; //-1 means unlimited
+    private double timeLimitInSeconds;
+
     private Course course;
     private Assistant assistant;
 
     private List<Submission> submissions;
     private List<MakeFile> makeFiles;
-    private List<TestCaseFile> testCaseFiles;
+    private List<TestCaseFile> inputTestFiles;
+    private List<TestCaseFile> outputTestFiles;
 
     public Task() {}
 
     public Task(String taskName, Date dueDate) {
         this.submissions = null;
-        this.testCaseFiles = null;
+        this.inputTestFiles = null;
+        this.outputTestFiles = null;
         this.makeFiles = null;
         this.assistant = null;
         this.course = null;
@@ -43,6 +52,19 @@ public class Task {
         return false;
     }
 
+    public String getReadableDueDate() {
+        if(dueDate != null)
+        {
+            DateTime dt = new DateTime(this.dueDate);
+            String str = dt.toString("dd-MM-yyyy");
+            return str;
+        }
+        else
+        {
+            return "Date not set";
+        }
+    }
+
     public List<MakeFile> getMakeFiles() {
         return makeFiles;
     }
@@ -51,12 +73,20 @@ public class Task {
         this.makeFiles = makeFiles;
     }
 
-    public List<TestCaseFile> getTestCaseFiles() {
-        return testCaseFiles;
+    public List<TestCaseFile> getInputTestFiles() {
+        return inputTestFiles;
     }
 
-    public void setTestCaseFiles(List<TestCaseFile> testCaseFiles) {
-        this.testCaseFiles = testCaseFiles;
+    public void setInputTestFiles(List<TestCaseFile> inputTestFiles) {
+        this.inputTestFiles = inputTestFiles;
+    }
+
+    public List<TestCaseFile> getOutputTestFiles() {
+        return outputTestFiles;
+    }
+
+    public void setOutputTestFiles(List<TestCaseFile> outputTestFiles) {
+        this.outputTestFiles = outputTestFiles;
     }
 
     public Assistant getAssistant() {
@@ -113,5 +143,45 @@ public class Task {
 
     public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public int getNumTestCases() {
+        return numTestCases;
+    }
+
+    public void setNumTestCases(int numTestCases) {
+        this.numTestCases = numTestCases;
+    }
+
+    public int getMemorySize() {
+        return memorySize;
+    }
+
+    public void setMemorySize(int memorySize) {
+        this.memorySize = memorySize;
+    }
+
+    public int getStackSize() {
+        return stackSize;
+    }
+
+    public void setStackSize(int stackSize) {
+        this.stackSize = stackSize;
+    }
+
+    public int getNumProcesses() {
+        return numProcesses;
+    }
+
+    public void setNumProcesses(int numProcesses) {
+        this.numProcesses = numProcesses;
+    }
+
+    public double getTimeLimitInSeconds() {
+        return timeLimitInSeconds;
+    }
+
+    public void setTimeLimitInSeconds(double timeLimitInSeconds) {
+        this.timeLimitInSeconds = timeLimitInSeconds;
     }
 }

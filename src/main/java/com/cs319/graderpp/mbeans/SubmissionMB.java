@@ -20,6 +20,7 @@ import javax.faces.event.ValueChangeEvent;
 import java.io.*;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -97,7 +98,8 @@ public class SubmissionMB extends PageControllerMB {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Submission not made, please select a Task!"));
         } else {
 
-            Submission submission = new Submission((Student) getLoginMB().getSignedUser(), DateTime.now());
+            Submission submission = new Submission((Student) getLoginMB().getSignedUser());
+            submission.setSubmissionDate(DateTime.now().toDate());
             submission.setTask(selectedTask);
             getDataService().getRealDataService().addSubmission(submission);
 

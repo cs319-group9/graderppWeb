@@ -133,7 +133,7 @@ public class DatabaseDataImpl implements DataServiceImpl {
             task_ids.add(id);
         }
 
-        ArrayList<String> submission_ids = new ArrayList<String>();
+        /*ArrayList<String> submission_ids = new ArrayList<String>();
         for (int i = 0; i < submission_count; i++){
             String student_id = student_ids.get(i % student_count);
             List l = getTasks4User(student_id);
@@ -147,7 +147,7 @@ public class DatabaseDataImpl implements DataServiceImpl {
                 return false;
             }
             task_ids.add(id);
-        }
+        }*/
 
         return true;
 

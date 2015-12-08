@@ -1,6 +1,7 @@
 package com.cs319.graderpp.mbeans;
 
 import com.cs319.graderpp.misc.LazyLoading;
+import com.cs319.graderpp.misc.SubmitFiles;
 import com.cs319.graderpp.models.*;
 import org.apache.poi.util.IOUtils;
 import org.joda.time.DateTime;
@@ -37,6 +38,9 @@ public class SubmissionMB extends PageControllerMB {
 
     @ManagedProperty("#{lazyLoading}")
     private LazyLoading lazyLoading;
+
+    @ManagedProperty("#{submitFiles}")
+    private SubmitFiles submitFiles;
 
     @Override
     public void loadData() {
@@ -119,6 +123,8 @@ public class SubmissionMB extends PageControllerMB {
                 IOUtils.closeQuietly(output);
             }
 
+            submitFiles.submit(path + "/" + file.getFileName());
+
             //instantiate CodeFile object for each file and add to the submission
             CodeFile codeFile = new CodeFile(file.getFileName(), path + file.getFileName(), file.getSize());
             codeFile.setInputStream(input);
@@ -161,6 +167,14 @@ public class SubmissionMB extends PageControllerMB {
 
     public void setLazyLoading(LazyLoading lazyLoading) {
         this.lazyLoading = lazyLoading;
+    }
+
+    public SubmitFiles getSubmitFiles() {
+        return submitFiles;
+    }
+
+    public void setSubmitFiles(SubmitFiles submitFiles) {
+        this.submitFiles = submitFiles;
     }
 }
 
